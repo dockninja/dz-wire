@@ -1,0 +1,60 @@
+// domain.proto
+syntax = "proto3";
+
+package zoner.domain.v1;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/domain/v1;domainpb";
+
+enum DomainAvailability {
+  DOMAIN_AVAILABILITY_UNSPECIFIED = 0;
+  DOMAIN_AVAILABILITY_AVAILABLE = 1;
+  DOMAIN_AVAILABILITY_REGISTERED = 2;
+  DOMAIN_AVAILABILITY_PREMIUM = 3;
+}
+
+enum DomainDnssec {
+  DOMAIN_DNSSEC_UNSPECIFIED = 0;
+  DOMAIN_DNSSEC_UNSIGNED = 1;
+  DOMAIN_DNSSEC_SIGNED = 2;
+}
+
+message Domain {
+  string id = 1;
+  string full = 2; // fqdn
+  string name = 3; // sld
+  string extension = 4; // tld
+
+  DomainAvailability availability = 5;
+  int32 length = 6;
+
+  google.protobuf.Duration age = 7;
+  google.protobuf.Duration time_to_expire = 8;
+  google.protobuf.Duration time_since_last_update = 9;
+
+  bool contain_number = 10;
+  bool contain_hyphen = 11;
+  bool favorite = 12;
+  repeated string tags = 13;
+
+  google.protobuf.Timestamp creation_date = 14;
+  google.protobuf.Timestamp updated_date = 15;
+  google.protobuf.Timestamp expiration_date = 16;
+
+  repeated string status = 17;
+  repeated string nameservers = 18;
+  DomainDnssec dnssec = 19;
+
+  string registrar_id = 20;
+  string registrar_name = 21;
+  string registrar_abuse_contact_email = 22;
+
+  repeated string whois_servers = 23;
+
+  map<string, string> raws = 24;
+
+  google.protobuf.Timestamp created_at = 25;
+  google.protobuf.Timestamp updated_at = 26;
+}

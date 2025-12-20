@@ -1,0 +1,31 @@
+// customer.proto
+syntax = "proto3";
+
+package dotily.billing.v1;
+
+import "dotily/billing/v1/billing.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+
+message Customer {
+  string user_id = 1;
+
+  BillingProvider provider = 2;
+
+  // External customer id in the provider system
+  string customer_id = 3;
+
+  google.protobuf.Timestamp created_at = 4;
+}
+
+// For your service method (UpsertCustomer)
+message UpsertCustomerRequest {
+  string user_id = 1;
+  BillingProvider provider = 2;
+  string customer_id = 3;
+}
+
+message UpsertCustomerResponse {
+  Customer customer = 1;
+}

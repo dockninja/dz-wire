@@ -1,0 +1,82 @@
+// domain.proto
+syntax = "proto3";
+
+package dotily.domain.v1;
+
+import "dotily/domain/v1/state.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpb";
+
+message Domain {
+  int64 id = 1;
+  string fqdn = 2;
+  string sld = 3;
+  string tld = 4;
+
+  int32 length = 5;
+  bool contain_number = 6;
+  bool contain_hyphen = 7;
+
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message UserDomain {
+  string user_id = 1;
+  int64 domain_id = 2;
+
+  bool enabled = 3;
+  bool favorite = 4;
+  repeated string tags = 5;
+
+  // Arbitrary JSON (per-user settings)
+  google.protobuf.Struct settings = 6;
+
+  google.protobuf.Timestamp paused_at = 7;
+
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message UserDomainItem {
+  Domain domain = 1;
+  UserDomain user_domain = 2;
+  DomainState state = 3; // optional-ish: omit if not requested
+}
+
+message UserDomainPatch {
+  google.protobuf.BoolValue enabled = 1;
+  google.protobuf.BoolValue favorite = 2;
+
+  // Tags ops
+  repeated string tags_set = 3;
+  repeated string tags_add = 4;
+  repeated string tags_remove = 5;
+
+  // Settings (merge/replace is service-defined)
+  google.protobuf.Struct settings = 6;
+
+  // true -> set paused_at, false -> clear
+  google.protobuf.BoolValue paused = 7;
+}
+
+message ListUserDomainsRequest {
+  int32 limit = 1;
+  string cursor = 2;
+
+  string search = 3; // fqdn contains, etc.
+  google.protobuf.StringValue tld = 4;
+
+  google.protobuf.BoolValue enabled = 5;
+  google.protobuf.BoolValue favorite = 6;
+
+  repeated string tags_any = 7;
+  repeated string tags_all = 8;
+}
+
+message ListUserDomainsResponse {
+  repeated UserDomainItem items = 1;
+  string next_cursor = 2;
+}

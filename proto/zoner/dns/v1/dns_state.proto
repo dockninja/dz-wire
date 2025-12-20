@@ -1,0 +1,48 @@
+// dns_state.proto
+syntax = "proto3";
+
+package zoner.dns.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/dns/v1;dnspb";
+
+enum DnsStatus {
+  DNS_STATUS_UNSPECIFIED = 0;
+  DNS_STATUS_OK = 1;
+  DNS_STATUS_NXDOMAIN = 2;
+  DNS_STATUS_SERVFAIL = 3;
+  DNS_STATUS_TIMEOUT = 4;
+}
+
+message TtlRange {
+  uint32 min = 1;
+  uint32 max = 2;
+}
+
+message DnsState {
+  string domain = 1;
+  google.protobuf.Timestamp checked_at = 2;
+  DnsStatus status = 3;
+
+  repeated string a = 4;
+  repeated string aaaa = 5;
+  repeated string ns = 6;
+
+  repeated string mx = 7;
+  repeated string txt = 8;
+
+  // "mname rname serial refresh retry expire minimum"
+  string soa = 9;
+
+  repeated string caa = 10;
+
+  string spf = 11;
+  string dmarc = 12;
+
+  bool dnssec_ds = 13;
+  bool dnssec_dnskey = 14;
+  bool dnssec_ad = 15;
+
+  map<string, TtlRange> ttl = 16;
+}

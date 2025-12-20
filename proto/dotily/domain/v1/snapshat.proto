@@ -1,0 +1,98 @@
+// snapshots.proto
+syntax = "proto3";
+
+package dotily.domain.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpb";
+
+message DNSExtracted {
+  repeated string a = 1;
+  repeated string aaaa = 2;
+
+  repeated string ns = 3;
+  repeated string mx = 4;
+  repeated string txt = 5;
+  repeated string caa = 6;
+
+  google.protobuf.StringValue soa = 7;
+  google.protobuf.StringValue spf = 8;
+  google.protobuf.StringValue dmarc = 9;
+
+  google.protobuf.BoolValue dnssec_ds = 10;
+  google.protobuf.BoolValue dnssec_dnskey = 11;
+  google.protobuf.BoolValue dnssec_ad = 12;
+
+  // flexible (payload remains source of truth)
+  google.protobuf.Struct ttl = 13;
+}
+
+message WHOISExtracted {
+  google.protobuf.StringValue registry_id = 1;
+  google.protobuf.StringValue registrar_id = 2;
+  google.protobuf.StringValue registrar_name = 3;
+  google.protobuf.StringValue registrar_abuse_contact_email = 4;
+
+  repeated string registry_status = 5;
+  repeated string name_servers = 6;
+  repeated string whois_servers = 7;
+
+  google.protobuf.StringValue dnssec = 8;
+
+  google.protobuf.StringValue creation_date_raw = 9;
+  google.protobuf.StringValue updated_date_raw = 10;
+  google.protobuf.StringValue expiration_date_raw = 11;
+
+  google.protobuf.Timestamp creation_date = 12;
+  google.protobuf.Timestamp updated_date = 13;
+  google.protobuf.Timestamp expiration_date = 14;
+}
+
+message DNSSnapshot {
+  int64 id = 1;
+  int64 domain_id = 2;
+  google.protobuf.Timestamp checked_at = 3;
+
+  int32 status = 4; // int16 -> int32
+  bytes hash = 5;
+
+  // raw JSON from worker (source of truth)
+  bytes payload_json = 6;
+
+  DNSExtracted extracted = 7;
+}
+
+message WHOISSnapshot {
+  int64 id = 1;
+  int64 domain_id = 2;
+  google.protobuf.Timestamp checked_at = 3;
+
+  int32 availability = 4; // int16 -> int32
+  bytes hash = 5;
+
+  bytes payload_json = 6;
+
+  WHOISExtracted extracted = 7;
+}
+
+// “Insert” requests (useful if zoner -> dotily ingest is gRPC)
+message CreateDNSSnapshotRequest {
+  int64 domain_id = 1;
+  google.protobuf.Timestamp checked_at = 2;
+  int32 status = 3;
+  bytes hash = 4;
+  bytes payload_json = 5;
+  DNSExtracted extracted = 6;
+}
+
+message CreateWHOISSnapshotRequest {
+  int64 domain_id = 1;
+  google.protobuf.Timestamp checked_at = 2;
+  int32 availability = 3;
+  bytes hash = 4;
+  bytes payload_json = 5;
+  WHOISExtracted extracted = 6;
+}

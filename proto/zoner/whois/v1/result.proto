@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package zoner.whois.v1;
+
+import "zoner/whois/v1/record.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;whoispb";
+
+message Result {
+  string fqdn = 1;
+  string sld = 2;
+  string tld = 3;
+
+  repeated string servers = 4;
+  map<string, string> raws = 5;
+  Record record = 6;
+}

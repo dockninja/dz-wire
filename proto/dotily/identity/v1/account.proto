@@ -1,0 +1,43 @@
+// user.proto
+syntax = "proto3";
+
+package dotily.identity.v1;
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypb";
+
+// Public/user-facing representation (NO password hash).
+message User {
+  string id = 1;
+
+  string email = 2;
+
+  // Nullable fields
+  google.protobuf.StringValue display_name = 3;
+  google.protobuf.Timestamp email_verified_at = 4;
+
+  // Arbitrary JSON object
+  google.protobuf.Struct metadata = 5;
+
+  // Account state
+  google.protobuf.Timestamp disabled_at = 6;
+  google.protobuf.Timestamp last_login_at = 7;
+
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+// Patch payload (partial update).
+// Use update_mask to specify which fields are being changed.
+// - display_name can be set or cleared (set wrapper to empty + include in mask).
+// - metadata can be replaced wholly unless you implement deep merge server-side.
+message UserProfilePatch {
+  google.protobuf.StringValue display_name = 1;
+  google.protobuf.Struct metadata = 2;
+
+  google.protobuf.FieldMask update_mask = 3;
+}

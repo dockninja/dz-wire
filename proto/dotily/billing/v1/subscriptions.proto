@@ -1,0 +1,69 @@
+// subscription.proto
+syntax = "proto3";
+
+package dotily.billing.v1;
+
+import "dotily/billing/v1/billing.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+
+  // Common normalized states (map provider -> these)
+  SUBSCRIPTION_STATUS_TRIALING = 1;
+  SUBSCRIPTION_STATUS_ACTIVE = 2;
+  SUBSCRIPTION_STATUS_PAST_DUE = 3;
+  SUBSCRIPTION_STATUS_UNPAID = 4;
+  SUBSCRIPTION_STATUS_PAUSED = 5;
+  SUBSCRIPTION_STATUS_CANCELED = 6;
+  SUBSCRIPTION_STATUS_INCOMPLETE = 7;
+  SUBSCRIPTION_STATUS_EXPIRED = 8;
+}
+
+message Subscription {
+  int64 id = 1; // internal DB id
+  string user_id = 2;
+  int64 plan_id = 3;
+
+  BillingProvider provider = 4;
+  string subscription_id = 5; // external provider subscription id
+
+  SubscriptionStatus status = 6;
+
+  google.protobuf.Timestamp current_period_start = 7;
+  google.protobuf.Timestamp current_period_end = 8;
+
+  bool cancel_at_period_end = 9;
+
+  google.protobuf.Timestamp canceled_at = 10;
+  google.protobuf.Timestamp ended_at = 11;
+  google.protobuf.Timestamp trial_end = 12;
+
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+}
+
+message UpsertSubscriptionRequest {
+  string user_id = 1;
+  int64 plan_id = 2;
+
+  BillingProvider provider = 3;
+  string subscription_id = 4;
+
+  SubscriptionStatus status = 5;
+
+  google.protobuf.Timestamp current_period_start = 6;
+  google.protobuf.Timestamp current_period_end = 7;
+
+  bool cancel_at_period_end = 8;
+
+  google.protobuf.Timestamp canceled_at = 9;
+  google.protobuf.Timestamp ended_at = 10;
+  google.protobuf.Timestamp trial_end = 11;
+}
+
+message UpsertSubscriptionResponse {
+  Subscription subscription = 1;
+}

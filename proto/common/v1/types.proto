@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/common/v1;commonpb";
+
+enum CheckStatus {
+  CHECK_STATUS_UNSPECIFIED = 0;
+  CHECK_STATUS_OK = 1;
+  CHECK_STATUS_NXDOMAIN = 2;
+  CHECK_STATUS_SERVFAIL = 3;
+  CHECK_STATUS_TIMEOUT = 4;
+  CHECK_STATUS_REFUSED = 5;
+  CHECK_STATUS_OTHER_ERROR = 6;
+}

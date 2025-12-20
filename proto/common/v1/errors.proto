@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package common.v1;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/common/v1;commonpb";
+
+message RateLimited {
+  google.protobuf.Duration retry_after = 1;
+  google.protobuf.Timestamp retry_at = 2;
+
+  string upstream = 3; // "rdap", "whois", "resolver"
+  string note = 4; // optional free text
+}
+
+message NotFound {
+  string resource = 1;
+  string id = 2;
+}
+
+message InvalidArgument {
+  string field = 1;
+  string reason = 2;
+}

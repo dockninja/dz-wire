@@ -1,0 +1,51 @@
+// whois_record.proto
+syntax = "proto3";
+
+package zoner.whois.v1;
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;whoispb";
+
+message Record {
+  string status = 1;
+  Registry registry = 2;
+  Contacts contacts = 3;
+}
+
+message Registry {
+  string id = 1;
+  string domain = 2;
+
+  // Keeping these as strings for now (matches current DTO).
+  string creation_date = 3;
+  string updated_date = 4;
+  string expiration_date = 5;
+
+  repeated string status = 6;
+  repeated string name_servers = 7;
+  string dnssec = 8;
+
+  string registrar_id = 9;
+  string registrar_name = 10;
+  string registrar_abuse_contact_email = 11;
+  repeated string whois_servers = 12;
+}
+
+message Contacts {
+  Details registrant = 1;
+  Details admin = 2;
+  Details tech = 3;
+}
+
+message Details {
+  string id = 1;
+  string name = 2;
+  string organization = 3;
+  string street = 4;
+  string city = 5;
+  string province = 6;
+  string postal_code = 7;
+  string country = 8;
+  string phone = 9;
+  string fax = 10;
+  string email = 11;
+}

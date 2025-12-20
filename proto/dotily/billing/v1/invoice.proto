@@ -1,0 +1,72 @@
+// invoice.proto
+syntax = "proto3";
+
+package dotily.billing.v1;
+
+import "dotily/billing/v1/billing.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+
+enum InvoiceStatus {
+  INVOICE_STATUS_UNSPECIFIED = 0;
+  INVOICE_STATUS_DRAFT = 1;
+  INVOICE_STATUS_OPEN = 2;
+  INVOICE_STATUS_PAID = 3;
+  INVOICE_STATUS_VOID = 4;
+  INVOICE_STATUS_UNCOLLECTIBLE = 5;
+  INVOICE_STATUS_CANCELED = 6;
+}
+
+message Invoice {
+  int64 id = 1; // internal DB id
+  string user_id = 2;
+
+  BillingProvider provider = 3; // reuse from customer.proto
+  string invoice_id = 4; // external provider invoice id
+
+  InvoiceStatus status = 5;
+
+  // Money (minor units)
+  google.protobuf.Int64Value amount_total = 6; // cents
+  google.protobuf.StringValue currency = 7; // "usd", "eur", etc.
+
+  google.protobuf.StringValue hosted_url = 8;
+  google.protobuf.StringValue pdf_url = 9;
+
+  google.protobuf.Timestamp period_start = 10;
+  google.protobuf.Timestamp period_end = 11;
+
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp paid_at = 13;
+}
+
+message UpsertInvoiceRequest {
+  string user_id = 1;
+  BillingProvider provider = 2;
+  string invoice_id = 3;
+
+  InvoiceStatus status = 4;
+
+  google.protobuf.Int64Value amount_total = 5;
+  google.protobuf.StringValue currency = 6;
+
+  google.protobuf.StringValue hosted_url = 7;
+  google.protobuf.StringValue pdf_url = 8;
+
+  google.protobuf.Timestamp period_start = 9;
+  google.protobuf.Timestamp period_end = 10;
+
+  // Provider timestamps (optional overrides)
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp paid_at = 12;
+
+  // Raw provider payload (for auditing/debug). Prefer Struct over bytes for portability.
+  google.protobuf.Struct payload = 13;
+}
+
+message UpsertInvoiceResponse {
+  Invoice invoice = 1;
+}

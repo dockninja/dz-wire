@@ -1,0 +1,12 @@
+// customer.proto
+syntax = "proto3";
+
+package dotily.billing.v1;
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+
+enum BillingProvider {
+  BILLING_PROVIDER_UNSPECIFIED = 0;
+  BILLING_PROVIDER_STRIPE = 1;
+  BILLING_PROVIDER_LEMONSQUEEZY = 2;
+}

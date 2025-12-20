@@ -1,0 +1,66 @@
+// state.proto
+syntax = "proto3";
+
+package dotily.domain.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpb";
+
+message DomainState {
+  int64 domain_id = 1;
+
+  google.protobuf.Int64Value dns_snapshot_id = 2;
+  google.protobuf.Int64Value whois_snapshot_id = 3;
+
+  google.protobuf.Timestamp dns_checked_at = 4;
+  google.protobuf.Timestamp dns_next_check_at = 5;
+  google.protobuf.Int32Value dns_status = 6; // int16 in DB -> int32 here
+  google.protobuf.Timestamp dns_changed_at = 7;
+
+  google.protobuf.Timestamp whois_checked_at = 8;
+  google.protobuf.Timestamp whois_next_check_at = 9;
+  google.protobuf.Int32Value whois_availability = 10; // int16 in DB -> int32 here
+  google.protobuf.Timestamp whois_changed_at = 11;
+
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+enum WorkKind {
+  WORK_KIND_UNSPECIFIED = 0;
+  WORK_KIND_DNS = 1;
+  WORK_KIND_WHOIS = 2;
+}
+
+message DomainDueItem {
+  string user_id = 1;
+  int64 domain_id = 2;
+  string fqdn = 3;
+
+  bool enabled = 4;
+  google.protobuf.Timestamp paused_at = 5;
+
+  WorkKind kind = 6;
+  google.protobuf.Timestamp next_check_at = 7;
+
+  google.protobuf.Int64Value last_snapshot_id = 8;
+  bytes last_hash = 9;
+}
+
+// Internal-ish patches (handy for storage/service layer)
+message UpdateDnsState {
+  google.protobuf.Int64Value snapshot_id = 1;
+  google.protobuf.Timestamp checked_at = 2;
+  google.protobuf.Timestamp next_check_at = 3;
+  google.protobuf.Int32Value status = 4;
+  google.protobuf.Timestamp changed_at = 5;
+}
+
+message UpdateWhoisState {
+  google.protobuf.Int64Value snapshot_id = 1;
+  google.protobuf.Timestamp checked_at = 2;
+  google.protobuf.Timestamp next_check_at = 3;
+  google.protobuf.Int32Value availability = 4;
+  google.protobuf.Timestamp changed_at = 5;
+}

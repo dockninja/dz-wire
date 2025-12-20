@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dotily.identity.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypb";
+
+message Session {
+  string id = 1;
+
+  // Auth owner
+  string user_id = 2;
+
+  // Lifecycle
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp expires_at = 4;
+
+  // Nullable fields
+  google.protobuf.Timestamp last_used_at = 5;
+
+  // Networking / device
+  string ip = 6; // string form: "203.0.113.10" or "2001:db8::1"
+  string user_agent = 7; // optional-ish: empty means unknown
+}
