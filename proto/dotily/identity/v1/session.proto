@@ -11,15 +11,16 @@ message Session {
 
   // Auth owner
   string user_id = 2;
+  string token_hash = 3;
 
   // Lifecycle
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp expires_at = 4;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp expires_at = 5;
 
   // Nullable fields
-  google.protobuf.Timestamp last_used_at = 5;
+  google.protobuf.Timestamp last_used_at = 6;
 
   // Networking / device
-  string ip = 6; // string form: "203.0.113.10" or "2001:db8::1"
-  string user_agent = 7; // optional-ish: empty means unknown
+  string ip = 7; // string form: "203.0.113.10" or "2001:db8::1"
+  string user_agent = 8;
 }

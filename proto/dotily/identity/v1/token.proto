@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dotily.identity.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypb";
+
+enum TokenType {
+  TOKEN_TYPE_UNSPECIFIED = 0;
+  TOKEN_TYPE_EMAIL_VERIFY = 1;
+  TOKEN_TYPE_PASSWORD_RESET = 2;
+  TOKEN_TYPE_MAGIC_LOGIN = 3;
+}
+
+message Token {
+  // Identity
+  string id = 1; // UUID
+  string user_id = 2; // UUID (owner)
+
+  // Purpose / type
+  TokenType type = 3;
+  string token_hash = 4;
+
+  // Lifecycle
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp expires_at = 6;
+  google.protobuf.Timestamp used_at = 7; // optional-ish (zero/absent => unused)
+
+  // Security / audit
+  string requested_ip = 8; // "203.0.113.10" or "2001:db8::1"
+  string user_agent = 9;
+}
