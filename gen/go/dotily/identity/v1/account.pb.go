@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/identity/v1/account.proto
 
-package identitypb
+package pbidentity
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -225,7 +225,7 @@ const file_dotily_identity_v1_account_proto_rawDesc = "" +
 	"\fdisplay_name\x18\x01 \x01(\v2\x1c.google.protobuf.StringValueR\vdisplayName\x123\n" +
 	"\bmetadata\x18\x02 \x01(\v2\x17.google.protobuf.StructR\bmetadata\x12;\n" +
 	"\vupdate_mask\x18\x03 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMaskBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypbb\x06proto3"
+	"updateMaskBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentityb\x06proto3"
 
 var (
 	file_dotily_identity_v1_account_proto_rawDescOnce sync.Once

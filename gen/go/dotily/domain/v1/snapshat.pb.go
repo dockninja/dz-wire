@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/domain/v1/snapshat.proto
 
-package domainpb
+package pbdomain
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -739,7 +739,7 @@ const file_dotily_domain_v1_snapshat_proto_rawDesc = "" +
 	"\favailability\x18\x03 \x01(\x05R\favailability\x12\x12\n" +
 	"\x04hash\x18\x04 \x01(\fR\x04hash\x12!\n" +
 	"\fpayload_json\x18\x05 \x01(\fR\vpayloadJson\x12>\n" +
-	"\textracted\x18\x06 \x01(\v2 .dotily.domain.v1.WHOISExtractedR\textractedB?Z=github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpbb\x06proto3"
+	"\textracted\x18\x06 \x01(\v2 .dotily.domain.v1.WHOISExtractedR\textractedB?Z=github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;pbdomainb\x06proto3"
 
 var (
 	file_dotily_domain_v1_snapshat_proto_rawDescOnce sync.Once

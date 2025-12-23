@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package dotily.billing.v1;
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
 enum BillingProvider {
   BILLING_PROVIDER_UNSPECIFIED = 0;

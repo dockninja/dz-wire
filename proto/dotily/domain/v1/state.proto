@@ -6,7 +6,7 @@ package dotily.domain.v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;pbdomain";
 
 message DomainState {
   int64 domain_id = 1;

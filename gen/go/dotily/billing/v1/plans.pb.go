@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/plans.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -311,7 +311,7 @@ const file_dotily_billing_v1_plans_proto_rawDesc = "" +
 	"product_id\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tproductId\x127\n" +
 	"\bprice_id\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\apriceId\"A\n" +
 	"\x12UpsertPlanResponse\x12+\n" +
-	"\x04plan\x18\x01 \x01(\v2\x17.dotily.billing.v1.PlanR\x04planBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\x04plan\x18\x01 \x01(\v2\x17.dotily.billing.v1.PlanR\x04planBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_plans_proto_rawDescOnce sync.Once

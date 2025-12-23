@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package zoner.whois.v1;
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;whoispb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;pbwhois";
 
 message Record {
   string status = 1;

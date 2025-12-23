@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/customer.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -216,7 +216,7 @@ const file_dotily_billing_v1_customer_proto_rawDesc = "" +
 	"\vcustomer_id\x18\x03 \x01(\tR\n" +
 	"customerId\"Q\n" +
 	"\x16UpsertCustomerResponse\x127\n" +
-	"\bcustomer\x18\x01 \x01(\v2\x1b.dotily.billing.v1.CustomerR\bcustomerBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\bcustomer\x18\x01 \x01(\v2\x1b.dotily.billing.v1.CustomerR\bcustomerBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_customer_proto_rawDescOnce sync.Once

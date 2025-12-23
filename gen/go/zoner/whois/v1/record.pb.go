@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: zoner/whois/v1/record.proto
 
-package whoispb
+package pbwhois
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -442,7 +442,7 @@ const file_zoner_whois_v1_record_proto_rawDesc = "" +
 	"\x05phone\x18\t \x01(\tR\x05phone\x12\x10\n" +
 	"\x03fax\x18\n" +
 	" \x01(\tR\x03fax\x12\x14\n" +
-	"\x05email\x18\v \x01(\tR\x05emailB<Z:github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;whoispbb\x06proto3"
+	"\x05email\x18\v \x01(\tR\x05emailB<Z:github.com/dockninja/dz-wire/gen/go/zoner/whois/v1;pbwhoisb\x06proto3"
 
 var (
 	file_zoner_whois_v1_record_proto_rawDescOnce sync.Once

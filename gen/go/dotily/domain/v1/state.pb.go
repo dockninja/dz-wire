@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/domain/v1/state.proto
 
-package domainpb
+package pbdomain
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -519,7 +519,7 @@ const file_dotily_domain_v1_state_proto_rawDesc = "" +
 	"\bWorkKind\x12\x19\n" +
 	"\x15WORK_KIND_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rWORK_KIND_DNS\x10\x01\x12\x13\n" +
-	"\x0fWORK_KIND_WHOIS\x10\x02B?Z=github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpbb\x06proto3"
+	"\x0fWORK_KIND_WHOIS\x10\x02B?Z=github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;pbdomainb\x06proto3"
 
 var (
 	file_dotily_domain_v1_state_proto_rawDescOnce sync.Once

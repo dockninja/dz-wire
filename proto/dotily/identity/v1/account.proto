@@ -8,7 +8,7 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentity";
 
 // Public/user-facing representation (NO password hash).
 message User {

@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: common/v1/types.proto
 
-package commonpb
+package pbcommon
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -94,7 +94,7 @@ const file_common_v1_types_proto_rawDesc = "" +
 	"\x15CHECK_STATUS_SERVFAIL\x10\x03\x12\x18\n" +
 	"\x14CHECK_STATUS_TIMEOUT\x10\x04\x12\x18\n" +
 	"\x14CHECK_STATUS_REFUSED\x10\x05\x12\x1c\n" +
-	"\x18CHECK_STATUS_OTHER_ERROR\x10\x06B8Z6github.com/dockninja/dz-wire/gen/go/common/v1;commonpbb\x06proto3"
+	"\x18CHECK_STATUS_OTHER_ERROR\x10\x06B8Z6github.com/dockninja/dz-wire/gen/go/common/v1;pbcommonb\x06proto3"
 
 var (
 	file_common_v1_types_proto_rawDescOnce sync.Once

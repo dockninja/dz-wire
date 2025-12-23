@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/activity/v1/usage_daily.proto
 
-package activitypb
+package pbactivity
 
 import (
 	date "google.golang.org/genproto/googleapis/type/date"
@@ -168,7 +168,7 @@ const file_dotily_activity_v1_usage_daily_proto_rawDesc = "" +
 	"\n" +
 	"_domain_idB\n" +
 	"\n" +
-	"\b_last_atBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/activity/v1;activitypbb\x06proto3"
+	"\b_last_atBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivityb\x06proto3"
 
 var (
 	file_dotily_activity_v1_usage_daily_proto_rawDescOnce sync.Once

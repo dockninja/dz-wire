@@ -5,7 +5,7 @@ package common.v1;
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/common/v1;commonpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/common/v1;pbcommon";
 
 message RateLimited {
   google.protobuf.Duration retry_after = 1;

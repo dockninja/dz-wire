@@ -6,7 +6,7 @@ package zoner.domain.v1;
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/domain/v1;domainpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/domain/v1;pbdomain";
 
 enum DomainAvailability {
   DOMAIN_AVAILABILITY_UNSPECIFIED = 0;

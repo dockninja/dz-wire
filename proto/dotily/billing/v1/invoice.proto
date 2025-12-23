@@ -8,7 +8,7 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
 enum InvoiceStatus {
   INVOICE_STATUS_UNSPECIFIED = 0;

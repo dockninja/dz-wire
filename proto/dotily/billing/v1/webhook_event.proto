@@ -6,7 +6,7 @@ package dotily.billing.v1;
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
 enum PaymentProvider {
   PAYMENT_PROVIDER_UNSPECIFIED = 0;

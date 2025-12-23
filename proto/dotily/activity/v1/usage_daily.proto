@@ -6,7 +6,7 @@ package dotily.activity.v1;
 import "google/protobuf/timestamp.proto";
 import "google/type/date.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;activitypb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivity";
 
 message UsageDaily {
   // Identity

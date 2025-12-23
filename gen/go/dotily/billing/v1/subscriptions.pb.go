@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/subscriptions.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -457,7 +457,7 @@ const file_dotily_billing_v1_subscriptions_proto_rawDesc = "" +
 	"\x1aSUBSCRIPTION_STATUS_PAUSED\x10\x05\x12 \n" +
 	"\x1cSUBSCRIPTION_STATUS_CANCELED\x10\x06\x12\"\n" +
 	"\x1eSUBSCRIPTION_STATUS_INCOMPLETE\x10\a\x12\x1f\n" +
-	"\x1bSUBSCRIPTION_STATUS_EXPIRED\x10\bBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\x1bSUBSCRIPTION_STATUS_EXPIRED\x10\bBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_subscriptions_proto_rawDescOnce sync.Once

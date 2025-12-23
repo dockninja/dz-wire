@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/invoice.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -466,7 +466,7 @@ const file_dotily_billing_v1_invoice_proto_rawDesc = "" +
 	"\x13INVOICE_STATUS_PAID\x10\x03\x12\x17\n" +
 	"\x13INVOICE_STATUS_VOID\x10\x04\x12 \n" +
 	"\x1cINVOICE_STATUS_UNCOLLECTIBLE\x10\x05\x12\x1b\n" +
-	"\x17INVOICE_STATUS_CANCELED\x10\x06BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\x17INVOICE_STATUS_CANCELED\x10\x06BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_invoice_proto_rawDescOnce sync.Once

@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: common/v1/errors.proto
 
-package commonpb
+package pbcommon
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -211,7 +211,7 @@ const file_common_v1_errors_proto_rawDesc = "" +
 	"\x02id\x18\x02 \x01(\tR\x02id\"?\n" +
 	"\x0fInvalidArgument\x12\x14\n" +
 	"\x05field\x18\x01 \x01(\tR\x05field\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reasonB8Z6github.com/dockninja/dz-wire/gen/go/common/v1;commonpbb\x06proto3"
+	"\x06reason\x18\x02 \x01(\tR\x06reasonB8Z6github.com/dockninja/dz-wire/gen/go/common/v1;pbcommonb\x06proto3"
 
 var (
 	file_common_v1_errors_proto_rawDescOnce sync.Once

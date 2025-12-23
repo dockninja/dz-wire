@@ -6,7 +6,7 @@ package dotily.billing.v1;
 import "dotily/billing/v1/billing.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
 message Customer {
   string user_id = 1;

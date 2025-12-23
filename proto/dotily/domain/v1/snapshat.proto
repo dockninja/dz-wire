@@ -7,7 +7,7 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;domainpb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/domain/v1;pbdomain";
 
 message DNSExtracted {
   repeated string a = 1;

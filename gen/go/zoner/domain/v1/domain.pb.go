@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: zoner/domain/v1/domain.proto
 
-package domainpb
+package pbdomain
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -416,7 +416,7 @@ const file_zoner_domain_v1_domain_proto_rawDesc = "" +
 	"\fDomainDnssec\x12\x1d\n" +
 	"\x19DOMAIN_DNSSEC_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16DOMAIN_DNSSEC_UNSIGNED\x10\x01\x12\x18\n" +
-	"\x14DOMAIN_DNSSEC_SIGNED\x10\x02B>Z<github.com/dockninja/dz-wire/gen/go/zoner/domain/v1;domainpbb\x06proto3"
+	"\x14DOMAIN_DNSSEC_SIGNED\x10\x02B>Z<github.com/dockninja/dz-wire/gen/go/zoner/domain/v1;pbdomainb\x06proto3"
 
 var (
 	file_zoner_domain_v1_domain_proto_rawDescOnce sync.Once

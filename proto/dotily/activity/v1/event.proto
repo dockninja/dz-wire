@@ -6,7 +6,7 @@ package dotily.activity.v1;
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;activitypb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivity";
 
 enum EventKind {
   EVENT_KIND_UNSPECIFIED = 0;

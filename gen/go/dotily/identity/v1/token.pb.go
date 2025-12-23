@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: dotily/identity/v1/token.proto
 
-package identitypb
+package pbidentity
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -209,7 +209,7 @@ const file_dotily_identity_v1_token_proto_rawDesc = "" +
 	"\x16TOKEN_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17TOKEN_TYPE_EMAIL_VERIFY\x10\x01\x12\x1d\n" +
 	"\x19TOKEN_TYPE_PASSWORD_RESET\x10\x02\x12\x1a\n" +
-	"\x16TOKEN_TYPE_MAGIC_LOGIN\x10\x03BCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypbb\x06proto3"
+	"\x16TOKEN_TYPE_MAGIC_LOGIN\x10\x03BCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentityb\x06proto3"
 
 var (
 	file_dotily_identity_v1_token_proto_rawDescOnce sync.Once

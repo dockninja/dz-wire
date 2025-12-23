@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/billing.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -80,7 +80,7 @@ const file_dotily_billing_v1_billing_proto_rawDesc = "" +
 	"\x0fBillingProvider\x12 \n" +
 	"\x1cBILLING_PROVIDER_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17BILLING_PROVIDER_STRIPE\x10\x01\x12!\n" +
-	"\x1dBILLING_PROVIDER_LEMONSQUEEZY\x10\x02BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\x1dBILLING_PROVIDER_LEMONSQUEEZY\x10\x02BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_billing_proto_rawDescOnce sync.Once

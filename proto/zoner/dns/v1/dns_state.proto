@@ -5,7 +5,7 @@ package zoner.dns.v1;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/dns/v1;dnspb";
+option go_package = "github.com/dockninja/dz-wire/gen/go/zoner/dns/v1;pbdns";
 
 enum DnsStatus {
   DNS_STATUS_UNSPECIFIED = 0;

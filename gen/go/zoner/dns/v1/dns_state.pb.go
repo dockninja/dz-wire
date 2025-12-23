@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: zoner/dns/v1/dns_state.proto
 
-package dnspb
+package pbdns
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -331,7 +331,7 @@ const file_zoner_dns_v1_dns_state_proto_rawDesc = "" +
 	"\rDNS_STATUS_OK\x10\x01\x12\x17\n" +
 	"\x13DNS_STATUS_NXDOMAIN\x10\x02\x12\x17\n" +
 	"\x13DNS_STATUS_SERVFAIL\x10\x03\x12\x16\n" +
-	"\x12DNS_STATUS_TIMEOUT\x10\x04B8Z6github.com/dockninja/dz-wire/gen/go/zoner/dns/v1;dnspbb\x06proto3"
+	"\x12DNS_STATUS_TIMEOUT\x10\x04B8Z6github.com/dockninja/dz-wire/gen/go/zoner/dns/v1;pbdnsb\x06proto3"
 
 var (
 	file_zoner_dns_v1_dns_state_proto_rawDescOnce sync.Once

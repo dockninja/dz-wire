@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/billing/v1/webhook_event.proto
 
-package billingpb
+package pbbilling
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -258,7 +258,7 @@ const file_dotily_billing_v1_webhook_event_proto_rawDesc = "" +
 	"\x1cWEBHOOK_EVENT_STATUS_PENDING\x10\x01\x12\"\n" +
 	"\x1eWEBHOOK_EVENT_STATUS_PROCESSED\x10\x02\x12\x1f\n" +
 	"\x1bWEBHOOK_EVENT_STATUS_FAILED\x10\x03\x12 \n" +
-	"\x1cWEBHOOK_EVENT_STATUS_IGNORED\x10\x04BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;billingpbb\x06proto3"
+	"\x1cWEBHOOK_EVENT_STATUS_IGNORED\x10\x04BAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_webhook_event_proto_rawDescOnce sync.Once

@@ -6,7 +6,7 @@
 // 	protoc        (unknown)
 // source: dotily/activity/v1/event.proto
 
-package activitypb
+package pbactivity
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -406,7 +406,7 @@ const file_dotily_activity_v1_event_proto_rawDesc = "" +
 	"\x17DELIVERY_STATUS_PENDING\x10\x01\x12\x18\n" +
 	"\x14DELIVERY_STATUS_SENT\x10\x02\x12\x1d\n" +
 	"\x19DELIVERY_STATUS_DELIVERED\x10\x03\x12\x1a\n" +
-	"\x16DELIVERY_STATUS_FAILED\x10\x04BCZAgithub.com/dockninja/dz-wire/gen/go/dotily/activity/v1;activitypbb\x06proto3"
+	"\x16DELIVERY_STATUS_FAILED\x10\x04BCZAgithub.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivityb\x06proto3"
 
 var (
 	file_dotily_activity_v1_event_proto_rawDescOnce sync.Once

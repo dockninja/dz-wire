@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: dotily/identity/v1/session.proto
 
-package identitypb
+package pbidentity
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -144,7 +144,7 @@ const file_dotily_identity_v1_session_proto_rawDesc = "" +
 	"lastUsedAt\x12\x0e\n" +
 	"\x02ip\x18\a \x01(\tR\x02ip\x12\x1d\n" +
 	"\n" +
-	"user_agent\x18\b \x01(\tR\tuserAgentBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;identitypbb\x06proto3"
+	"user_agent\x18\b \x01(\tR\tuserAgentBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentityb\x06proto3"
 
 var (
 	file_dotily_identity_v1_session_proto_rawDescOnce sync.Once
