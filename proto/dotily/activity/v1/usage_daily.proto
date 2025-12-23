@@ -1,0 +1,29 @@
+// daily_usage.proto
+syntax = "proto3";
+
+package dotily.activity.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/date.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;activitypb";
+
+message UsageDaily {
+  // Identity
+  string id = 1; // UUID
+  string user_id = 2; // UUID
+  optional string domain_id = 3; // UUID (nullable)
+
+  // Aggregation key
+  google.type.Date day = 4; // DATE
+  string metric = 5; // dns_check, whois_check, rdap_check, worker_call...
+
+  // Counters
+  int64 ok_count = 6;
+  int64 err_count = 7;
+  optional google.protobuf.Timestamp last_at = 8;
+
+  // Row lifecycle
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
