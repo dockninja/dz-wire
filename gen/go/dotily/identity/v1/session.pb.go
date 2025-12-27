@@ -9,6 +9,7 @@ package pbidentity
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -28,14 +29,14 @@ type Session struct {
 	// Auth owner
 	UserId    string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	TokenHash string `protobuf:"bytes,3,opt,name=token_hash,json=tokenHash,proto3" json:"token_hash,omitempty"`
-	// Lifecycle
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	ExpiresAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	// Nullable fields
-	LastUsedAt *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=last_used_at,json=lastUsedAt,proto3" json:"last_used_at,omitempty"`
 	// Networking / device
-	Ip            string `protobuf:"bytes,7,opt,name=ip,proto3" json:"ip,omitempty"` // string form: "203.0.113.10" or "2001:db8::1"
-	UserAgent     string `protobuf:"bytes,8,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
+	Ip        string `protobuf:"bytes,4,opt,name=ip,proto3" json:"ip,omitempty"` // string form: "203.0.113.10" or "2001:db8::1"
+	UserAgent string `protobuf:"bytes,5,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
+	// Lifecycle
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	ExpiresAt *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	// Nullable fields
+	LastUsedAt    *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=last_used_at,json=lastUsedAt,proto3" json:"last_used_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,6 +92,20 @@ func (x *Session) GetTokenHash() string {
 	return ""
 }
 
+func (x *Session) GetIp() string {
+	if x != nil {
+		return x.Ip
+	}
+	return ""
+}
+
+func (x *Session) GetUserAgent() string {
+	if x != nil {
+		return x.UserAgent
+	}
+	return ""
+}
+
 func (x *Session) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -112,39 +127,114 @@ func (x *Session) GetLastUsedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-func (x *Session) GetIp() string {
+// SessionParam carries the context needed to touch a session (and optionally rotate it).
+// If ttl is set, treat it as a rotate request; otherwise it's a touch.
+type SessionParam struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Required
+	TokenHash []byte                 `protobuf:"bytes,1,opt,name=token_hash,json=tokenHash,proto3" json:"token_hash,omitempty"`
+	Now       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=now,proto3" json:"now,omitempty"`
+	// Optional
+	Ip        string `protobuf:"bytes,3,opt,name=ip,proto3" json:"ip,omitempty"`
+	UserAgent string `protobuf:"bytes,4,opt,name=user_agent,json=userAgent,proto3" json:"user_agent,omitempty"`
+	// Optional: when set => rotate
+	Ttl           *durationpb.Duration `protobuf:"bytes,5,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SessionParam) Reset() {
+	*x = SessionParam{}
+	mi := &file_dotily_identity_v1_session_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SessionParam) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SessionParam) ProtoMessage() {}
+
+func (x *SessionParam) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_identity_v1_session_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SessionParam.ProtoReflect.Descriptor instead.
+func (*SessionParam) Descriptor() ([]byte, []int) {
+	return file_dotily_identity_v1_session_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SessionParam) GetTokenHash() []byte {
+	if x != nil {
+		return x.TokenHash
+	}
+	return nil
+}
+
+func (x *SessionParam) GetNow() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Now
+	}
+	return nil
+}
+
+func (x *SessionParam) GetIp() string {
 	if x != nil {
 		return x.Ip
 	}
 	return ""
 }
 
-func (x *Session) GetUserAgent() string {
+func (x *SessionParam) GetUserAgent() string {
 	if x != nil {
 		return x.UserAgent
 	}
 	return ""
 }
 
+func (x *SessionParam) GetTtl() *durationpb.Duration {
+	if x != nil {
+		return x.Ttl
+	}
+	return nil
+}
+
 var File_dotily_identity_v1_session_proto protoreflect.FileDescriptor
 
 const file_dotily_identity_v1_session_proto_rawDesc = "" +
 	"\n" +
-	" dotily/identity/v1/session.proto\x12\x12dotily.identity.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb4\x02\n" +
+	" dotily/identity/v1/session.proto\x12\x12dotily.identity.v1\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb4\x02\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"token_hash\x18\x03 \x01(\tR\ttokenHash\x129\n" +
+	"token_hash\x18\x03 \x01(\tR\ttokenHash\x12\x0e\n" +
+	"\x02ip\x18\x04 \x01(\tR\x02ip\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"user_agent\x18\x05 \x01(\tR\tuserAgent\x129\n" +
 	"\n" +
-	"expires_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12<\n" +
-	"\flast_used_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"lastUsedAt\x12\x0e\n" +
-	"\x02ip\x18\a \x01(\tR\x02ip\x12\x1d\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"user_agent\x18\b \x01(\tR\tuserAgentBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentityb\x06proto3"
+	"expires_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12<\n" +
+	"\flast_used_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"lastUsedAt\"\xb7\x01\n" +
+	"\fSessionParam\x12\x1d\n" +
+	"\n" +
+	"token_hash\x18\x01 \x01(\fR\ttokenHash\x12,\n" +
+	"\x03now\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x03now\x12\x0e\n" +
+	"\x02ip\x18\x03 \x01(\tR\x02ip\x12\x1d\n" +
+	"\n" +
+	"user_agent\x18\x04 \x01(\tR\tuserAgent\x12+\n" +
+	"\x03ttl\x18\x05 \x01(\v2\x19.google.protobuf.DurationR\x03ttlBCZAgithub.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentityb\x06proto3"
 
 var (
 	file_dotily_identity_v1_session_proto_rawDescOnce sync.Once
@@ -158,20 +248,24 @@ func file_dotily_identity_v1_session_proto_rawDescGZIP() []byte {
 	return file_dotily_identity_v1_session_proto_rawDescData
 }
 
-var file_dotily_identity_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dotily_identity_v1_session_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dotily_identity_v1_session_proto_goTypes = []any{
 	(*Session)(nil),               // 0: dotily.identity.v1.Session
-	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
+	(*SessionParam)(nil),          // 1: dotily.identity.v1.SessionParam
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),   // 3: google.protobuf.Duration
 }
 var file_dotily_identity_v1_session_proto_depIdxs = []int32{
-	1, // 0: dotily.identity.v1.Session.created_at:type_name -> google.protobuf.Timestamp
-	1, // 1: dotily.identity.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
-	1, // 2: dotily.identity.v1.Session.last_used_at:type_name -> google.protobuf.Timestamp
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 0: dotily.identity.v1.Session.created_at:type_name -> google.protobuf.Timestamp
+	2, // 1: dotily.identity.v1.Session.expires_at:type_name -> google.protobuf.Timestamp
+	2, // 2: dotily.identity.v1.Session.last_used_at:type_name -> google.protobuf.Timestamp
+	2, // 3: dotily.identity.v1.SessionParam.now:type_name -> google.protobuf.Timestamp
+	3, // 4: dotily.identity.v1.SessionParam.ttl:type_name -> google.protobuf.Duration
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_dotily_identity_v1_session_proto_init() }
@@ -185,7 +279,7 @@ func file_dotily_identity_v1_session_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_identity_v1_session_proto_rawDesc), len(file_dotily_identity_v1_session_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

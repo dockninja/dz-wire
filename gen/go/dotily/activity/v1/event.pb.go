@@ -25,56 +25,71 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type EventKind int32
+type EventCategory int32
 
 const (
-	EventKind_EVENT_KIND_UNSPECIFIED  EventKind = 0
-	EventKind_EVENT_KIND_DOMAIN       EventKind = 1
-	EventKind_EVENT_KIND_NOTIFICATION EventKind = 2
+	EventCategory_EVENT_CATEGORY_UNSPECIFIED  EventCategory = 0
+	EventCategory_EVENT_CATEGORY_DOMAIN       EventCategory = 1 // expiry, status, transfer lock, ...
+	EventCategory_EVENT_CATEGORY_DNS          EventCategory = 2 // records/NS/MX changes, resolver errors, ...
+	EventCategory_EVENT_CATEGORY_WHOIS        EventCategory = 3 // rdap/whois changes
+	EventCategory_EVENT_CATEGORY_CERT         EventCategory = 4 // cert changed / expires soon
+	EventCategory_EVENT_CATEGORY_SECURITY     EventCategory = 5 // dnssec changed, suspicious changes, ...
+	EventCategory_EVENT_CATEGORY_NOTIFICATION EventCategory = 6 // delivery lifecycle
+	EventCategory_EVENT_CATEGORY_SYSTEM       EventCategory = 7 // worker errors, rate limits, internal
 )
 
-// Enum value maps for EventKind.
+// Enum value maps for EventCategory.
 var (
-	EventKind_name = map[int32]string{
-		0: "EVENT_KIND_UNSPECIFIED",
-		1: "EVENT_KIND_DOMAIN",
-		2: "EVENT_KIND_NOTIFICATION",
+	EventCategory_name = map[int32]string{
+		0: "EVENT_CATEGORY_UNSPECIFIED",
+		1: "EVENT_CATEGORY_DOMAIN",
+		2: "EVENT_CATEGORY_DNS",
+		3: "EVENT_CATEGORY_WHOIS",
+		4: "EVENT_CATEGORY_CERT",
+		5: "EVENT_CATEGORY_SECURITY",
+		6: "EVENT_CATEGORY_NOTIFICATION",
+		7: "EVENT_CATEGORY_SYSTEM",
 	}
-	EventKind_value = map[string]int32{
-		"EVENT_KIND_UNSPECIFIED":  0,
-		"EVENT_KIND_DOMAIN":       1,
-		"EVENT_KIND_NOTIFICATION": 2,
+	EventCategory_value = map[string]int32{
+		"EVENT_CATEGORY_UNSPECIFIED":  0,
+		"EVENT_CATEGORY_DOMAIN":       1,
+		"EVENT_CATEGORY_DNS":          2,
+		"EVENT_CATEGORY_WHOIS":        3,
+		"EVENT_CATEGORY_CERT":         4,
+		"EVENT_CATEGORY_SECURITY":     5,
+		"EVENT_CATEGORY_NOTIFICATION": 6,
+		"EVENT_CATEGORY_SYSTEM":       7,
 	}
 )
 
-func (x EventKind) Enum() *EventKind {
-	p := new(EventKind)
+func (x EventCategory) Enum() *EventCategory {
+	p := new(EventCategory)
 	*p = x
 	return p
 }
 
-func (x EventKind) String() string {
+func (x EventCategory) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (EventKind) Descriptor() protoreflect.EnumDescriptor {
+func (EventCategory) Descriptor() protoreflect.EnumDescriptor {
 	return file_dotily_activity_v1_event_proto_enumTypes[0].Descriptor()
 }
 
-func (EventKind) Type() protoreflect.EnumType {
+func (EventCategory) Type() protoreflect.EnumType {
 	return &file_dotily_activity_v1_event_proto_enumTypes[0]
 }
 
-func (x EventKind) Number() protoreflect.EnumNumber {
+func (x EventCategory) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use EventKind.Descriptor instead.
-func (EventKind) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use EventCategory.Descriptor instead.
+func (EventCategory) EnumDescriptor() ([]byte, []int) {
 	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{0}
 }
 
-// Adjust these to match your SQL enum app.event_severity if it differs.
+// Adjust to match your SQL enum app.event_severity if it differs.
 type EventSeverity int32
 
 const (
@@ -130,7 +145,7 @@ func (EventSeverity) EnumDescriptor() ([]byte, []int) {
 	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{1}
 }
 
-// Adjust these to match your SQL enum app.delivery_status if it differs.
+// Adjust to match your SQL enum app.delivery_status if it differs.
 type DeliveryStatus int32
 
 const (
@@ -187,31 +202,28 @@ func (DeliveryStatus) EnumDescriptor() ([]byte, []int) {
 }
 
 type Event struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Identity
-	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                             // UUID
-	UserId   string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`       // UUID
-	DomainId string `protobuf:"bytes,3,opt,name=domain_id,json=domainId,proto3" json:"domain_id,omitempty"` // UUID
-	// Classification
-	Kind      EventKind     `protobuf:"varint,4,opt,name=kind,proto3,enum=dotily.activity.v1.EventKind" json:"kind,omitempty"` // domain | notification
-	EventType string        `protobuf:"bytes,5,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`         // dns_changed, whois_changed, expires_soon, notification_sent...
-	Severity  EventSeverity `protobuf:"varint,6,opt,name=severity,proto3,enum=dotily.activity.v1.EventSeverity" json:"severity,omitempty"`
-	// Timeline
-	OccurredAt *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
-	// Optional links
-	DnsSnapshotId   *string `protobuf:"bytes,8,opt,name=dns_snapshot_id,json=dnsSnapshotId,proto3,oneof" json:"dns_snapshot_id,omitempty"`       // UUID
-	WhoisSnapshotId *string `protobuf:"bytes,9,opt,name=whois_snapshot_id,json=whoisSnapshotId,proto3,oneof" json:"whois_snapshot_id,omitempty"` // UUID
-	SourceEventId   *string `protobuf:"bytes,10,opt,name=source_event_id,json=sourceEventId,proto3,oneof" json:"source_event_id,omitempty"`      // UUID (self-ref)
-	// Notification fields (only meaningful when kind=NOTIFICATION)
-	Channel        *string                `protobuf:"bytes,11,opt,name=channel,proto3,oneof" json:"channel,omitempty"` // telegram/email/webhook/...
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Id       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                   // UUID
+	UserId   string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`             // UUID
+	DomainId *string                `protobuf:"bytes,3,opt,name=domain_id,json=domainId,proto3,oneof" json:"domain_id,omitempty"` // UUID (not all events are domain-bound)
+	Category EventCategory          `protobuf:"varint,4,opt,name=category,proto3,enum=dotily.activity.v1.EventCategory" json:"category,omitempty"`
+	// Keep event_type as string for flexibility.
+	// Examples: "dns.changed", "whois.changed", "domain.expires_soon", "notification.sent"
+	EventType       string                 `protobuf:"bytes,5,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	Severity        EventSeverity          `protobuf:"varint,6,opt,name=severity,proto3,enum=dotily.activity.v1.EventSeverity" json:"severity,omitempty"`
+	OccurredAt      *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
+	DnsSnapshotId   *string                `protobuf:"bytes,8,opt,name=dns_snapshot_id,json=dnsSnapshotId,proto3,oneof" json:"dns_snapshot_id,omitempty"`       // UUID
+	WhoisSnapshotId *string                `protobuf:"bytes,9,opt,name=whois_snapshot_id,json=whoisSnapshotId,proto3,oneof" json:"whois_snapshot_id,omitempty"` // UUID
+	SourceEventId   *string                `protobuf:"bytes,10,opt,name=source_event_id,json=sourceEventId,proto3,oneof" json:"source_event_id,omitempty"`      // UUID
+	// Notification fields (meaningful when category=NOTIFICATION)
+	Channel        *string                `protobuf:"bytes,11,opt,name=channel,proto3,oneof" json:"channel,omitempty"` // "telegram" | "email" | "webhook" | ...
 	DeliveryStatus *DeliveryStatus        `protobuf:"varint,12,opt,name=delivery_status,json=deliveryStatus,proto3,enum=dotily.activity.v1.DeliveryStatus,oneof" json:"delivery_status,omitempty"`
 	SentAt         *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=sent_at,json=sentAt,proto3,oneof" json:"sent_at,omitempty"`
 	ProviderRef    *string                `protobuf:"bytes,14,opt,name=provider_ref,json=providerRef,proto3,oneof" json:"provider_ref,omitempty"`
 	Error          *string                `protobuf:"bytes,15,opt,name=error,proto3,oneof" json:"error,omitempty"`
-	// Payload / extra data
-	Payload       *structpb.Struct `protobuf:"bytes,16,opt,name=payload,proto3" json:"payload,omitempty"` // JSONB object
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Payload        *structpb.Struct       `protobuf:"bytes,16,opt,name=payload,proto3" json:"payload,omitempty"` // JSONB object
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Event) Reset() {
@@ -259,17 +271,17 @@ func (x *Event) GetUserId() string {
 }
 
 func (x *Event) GetDomainId() string {
-	if x != nil {
-		return x.DomainId
+	if x != nil && x.DomainId != nil {
+		return *x.DomainId
 	}
 	return ""
 }
 
-func (x *Event) GetKind() EventKind {
+func (x *Event) GetCategory() EventCategory {
 	if x != nil {
-		return x.Kind
+		return x.Category
 	}
-	return EventKind_EVENT_KIND_UNSPECIFIED
+	return EventCategory_EVENT_CATEGORY_UNSPECIFIED
 }
 
 func (x *Event) GetEventType() string {
@@ -356,31 +368,389 @@ func (x *Event) GetPayload() *structpb.Struct {
 	return nil
 }
 
+type EventFilter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Limit         uint32                 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset        uint32                 `protobuf:"varint,3,opt,name=offset,proto3" json:"offset,omitempty"`
+	Types         []string               `protobuf:"bytes,4,rep,name=types,proto3" json:"types,omitempty"`
+	Tags          []string               `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
+	From          *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=from,proto3" json:"from,omitempty"`
+	To            *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=to,proto3" json:"to,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventFilter) Reset() {
+	*x = EventFilter{}
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventFilter) ProtoMessage() {}
+
+func (x *EventFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventFilter.ProtoReflect.Descriptor instead.
+func (*EventFilter) Descriptor() ([]byte, []int) {
+	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *EventFilter) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *EventFilter) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *EventFilter) GetOffset() uint32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *EventFilter) GetTypes() []string {
+	if x != nil {
+		return x.Types
+	}
+	return nil
+}
+
+func (x *EventFilter) GetTags() []string {
+	if x != nil {
+		return x.Tags
+	}
+	return nil
+}
+
+func (x *EventFilter) GetFrom() *timestamppb.Timestamp {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *EventFilter) GetTo() *timestamppb.Timestamp {
+	if x != nil {
+		return x.To
+	}
+	return nil
+}
+
+type EventsPage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         uint64                 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Offset        uint32                 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Limit         uint32                 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Items         []*Event               `protobuf:"bytes,4,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventsPage) Reset() {
+	*x = EventsPage{}
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventsPage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventsPage) ProtoMessage() {}
+
+func (x *EventsPage) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventsPage.ProtoReflect.Descriptor instead.
+func (*EventsPage) Descriptor() ([]byte, []int) {
+	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *EventsPage) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *EventsPage) GetOffset() uint32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *EventsPage) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *EventsPage) GetItems() []*Event {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+type EventChannel struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"` // "email" | "telegram" | "webhook" | ...
+	Enabled       bool                   `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Config        *structpb.Struct       `protobuf:"bytes,3,opt,name=config,proto3" json:"config,omitempty"` // optional
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventChannel) Reset() {
+	*x = EventChannel{}
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventChannel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventChannel) ProtoMessage() {}
+
+func (x *EventChannel) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventChannel.ProtoReflect.Descriptor instead.
+func (*EventChannel) Descriptor() ([]byte, []int) {
+	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *EventChannel) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *EventChannel) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *EventChannel) GetConfig() *structpb.Struct {
+	if x != nil {
+		return x.Config
+	}
+	return nil
+}
+
+type EventToggle struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EventType     string                 `protobuf:"bytes,1,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`                     // e.g. "dns.changed" (optional)
+	Category      EventCategory          `protobuf:"varint,2,opt,name=category,proto3,enum=dotily.activity.v1.EventCategory" json:"category,omitempty"` // optional (broad)
+	Enabled       bool                   `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	MinSeverity   EventSeverity          `protobuf:"varint,4,opt,name=min_severity,json=minSeverity,proto3,enum=dotily.activity.v1.EventSeverity" json:"min_severity,omitempty"` // optional
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventToggle) Reset() {
+	*x = EventToggle{}
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventToggle) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventToggle) ProtoMessage() {}
+
+func (x *EventToggle) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventToggle.ProtoReflect.Descriptor instead.
+func (*EventToggle) Descriptor() ([]byte, []int) {
+	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *EventToggle) GetEventType() string {
+	if x != nil {
+		return x.EventType
+	}
+	return ""
+}
+
+func (x *EventToggle) GetCategory() EventCategory {
+	if x != nil {
+		return x.Category
+	}
+	return EventCategory_EVENT_CATEGORY_UNSPECIFIED
+}
+
+func (x *EventToggle) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *EventToggle) GetMinSeverity() EventSeverity {
+	if x != nil {
+		return x.MinSeverity
+	}
+	return EventSeverity_EVENT_SEVERITY_UNSPECIFIED
+}
+
+type EventPrefs struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Channels      []*EventChannel        `protobuf:"bytes,2,rep,name=channels,proto3" json:"channels,omitempty"`
+	Toggles       []*EventToggle         `protobuf:"bytes,3,rep,name=toggles,proto3" json:"toggles,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventPrefs) Reset() {
+	*x = EventPrefs{}
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventPrefs) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventPrefs) ProtoMessage() {}
+
+func (x *EventPrefs) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_activity_v1_event_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventPrefs.ProtoReflect.Descriptor instead.
+func (*EventPrefs) Descriptor() ([]byte, []int) {
+	return file_dotily_activity_v1_event_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EventPrefs) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *EventPrefs) GetChannels() []*EventChannel {
+	if x != nil {
+		return x.Channels
+	}
+	return nil
+}
+
+func (x *EventPrefs) GetToggles() []*EventToggle {
+	if x != nil {
+		return x.Toggles
+	}
+	return nil
+}
+
+func (x *EventPrefs) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
 var File_dotily_activity_v1_event_proto protoreflect.FileDescriptor
 
 const file_dotily_activity_v1_event_proto_rawDesc = "" +
 	"\n" +
-	"\x1edotily/activity/v1/event.proto\x12\x12dotily.activity.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcc\x06\n" +
+	"\x1edotily/activity/v1/event.proto\x12\x12dotily.activity.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xeb\x06\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1b\n" +
-	"\tdomain_id\x18\x03 \x01(\tR\bdomainId\x121\n" +
-	"\x04kind\x18\x04 \x01(\x0e2\x1d.dotily.activity.v1.EventKindR\x04kind\x12\x1d\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12 \n" +
+	"\tdomain_id\x18\x03 \x01(\tH\x00R\bdomainId\x88\x01\x01\x12=\n" +
+	"\bcategory\x18\x04 \x01(\x0e2!.dotily.activity.v1.EventCategoryR\bcategory\x12\x1d\n" +
 	"\n" +
 	"event_type\x18\x05 \x01(\tR\teventType\x12=\n" +
 	"\bseverity\x18\x06 \x01(\x0e2!.dotily.activity.v1.EventSeverityR\bseverity\x12;\n" +
 	"\voccurred_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"occurredAt\x12+\n" +
-	"\x0fdns_snapshot_id\x18\b \x01(\tH\x00R\rdnsSnapshotId\x88\x01\x01\x12/\n" +
-	"\x11whois_snapshot_id\x18\t \x01(\tH\x01R\x0fwhoisSnapshotId\x88\x01\x01\x12+\n" +
+	"\x0fdns_snapshot_id\x18\b \x01(\tH\x01R\rdnsSnapshotId\x88\x01\x01\x12/\n" +
+	"\x11whois_snapshot_id\x18\t \x01(\tH\x02R\x0fwhoisSnapshotId\x88\x01\x01\x12+\n" +
 	"\x0fsource_event_id\x18\n" +
-	" \x01(\tH\x02R\rsourceEventId\x88\x01\x01\x12\x1d\n" +
-	"\achannel\x18\v \x01(\tH\x03R\achannel\x88\x01\x01\x12P\n" +
-	"\x0fdelivery_status\x18\f \x01(\x0e2\".dotily.activity.v1.DeliveryStatusH\x04R\x0edeliveryStatus\x88\x01\x01\x128\n" +
-	"\asent_at\x18\r \x01(\v2\x1a.google.protobuf.TimestampH\x05R\x06sentAt\x88\x01\x01\x12&\n" +
-	"\fprovider_ref\x18\x0e \x01(\tH\x06R\vproviderRef\x88\x01\x01\x12\x19\n" +
-	"\x05error\x18\x0f \x01(\tH\aR\x05error\x88\x01\x01\x121\n" +
-	"\apayload\x18\x10 \x01(\v2\x17.google.protobuf.StructR\apayloadB\x12\n" +
+	" \x01(\tH\x03R\rsourceEventId\x88\x01\x01\x12\x1d\n" +
+	"\achannel\x18\v \x01(\tH\x04R\achannel\x88\x01\x01\x12P\n" +
+	"\x0fdelivery_status\x18\f \x01(\x0e2\".dotily.activity.v1.DeliveryStatusH\x05R\x0edeliveryStatus\x88\x01\x01\x128\n" +
+	"\asent_at\x18\r \x01(\v2\x1a.google.protobuf.TimestampH\x06R\x06sentAt\x88\x01\x01\x12&\n" +
+	"\fprovider_ref\x18\x0e \x01(\tH\aR\vproviderRef\x88\x01\x01\x12\x19\n" +
+	"\x05error\x18\x0f \x01(\tH\bR\x05error\x88\x01\x01\x121\n" +
+	"\apayload\x18\x10 \x01(\v2\x17.google.protobuf.StructR\apayloadB\f\n" +
+	"\n" +
+	"_domain_idB\x12\n" +
 	"\x10_dns_snapshot_idB\x14\n" +
 	"\x12_whois_snapshot_idB\x12\n" +
 	"\x10_source_event_idB\n" +
@@ -390,11 +760,47 @@ const file_dotily_activity_v1_event_proto_rawDesc = "" +
 	"\n" +
 	"\b_sent_atB\x0f\n" +
 	"\r_provider_refB\b\n" +
-	"\x06_error*[\n" +
-	"\tEventKind\x12\x1a\n" +
-	"\x16EVENT_KIND_UNSPECIFIED\x10\x00\x12\x15\n" +
-	"\x11EVENT_KIND_DOMAIN\x10\x01\x12\x1b\n" +
-	"\x17EVENT_KIND_NOTIFICATION\x10\x02*\x9b\x01\n" +
+	"\x06_error\"\xda\x01\n" +
+	"\vEventFilter\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\rR\x05limit\x12\x16\n" +
+	"\x06offset\x18\x03 \x01(\rR\x06offset\x12\x14\n" +
+	"\x05types\x18\x04 \x03(\tR\x05types\x12\x12\n" +
+	"\x04tags\x18\x05 \x03(\tR\x04tags\x12.\n" +
+	"\x04from\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\x04from\x12*\n" +
+	"\x02to\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\x02to\"\x81\x01\n" +
+	"\n" +
+	"EventsPage\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x04R\x05total\x12\x16\n" +
+	"\x06offset\x18\x02 \x01(\rR\x06offset\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\rR\x05limit\x12/\n" +
+	"\x05items\x18\x04 \x03(\v2\x19.dotily.activity.v1.EventR\x05items\"m\n" +
+	"\fEventChannel\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\aenabled\x18\x02 \x01(\bR\aenabled\x12/\n" +
+	"\x06config\x18\x03 \x01(\v2\x17.google.protobuf.StructR\x06config\"\xcb\x01\n" +
+	"\vEventToggle\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x01 \x01(\tR\teventType\x12=\n" +
+	"\bcategory\x18\x02 \x01(\x0e2!.dotily.activity.v1.EventCategoryR\bcategory\x12\x18\n" +
+	"\aenabled\x18\x03 \x01(\bR\aenabled\x12D\n" +
+	"\fmin_severity\x18\x04 \x01(\x0e2!.dotily.activity.v1.EventSeverityR\vminSeverity\"\xd9\x01\n" +
+	"\n" +
+	"EventPrefs\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12<\n" +
+	"\bchannels\x18\x02 \x03(\v2 .dotily.activity.v1.EventChannelR\bchannels\x129\n" +
+	"\atoggles\x18\x03 \x03(\v2\x1f.dotily.activity.v1.EventToggleR\atoggles\x129\n" +
+	"\n" +
+	"updated_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt*\xee\x01\n" +
+	"\rEventCategory\x12\x1e\n" +
+	"\x1aEVENT_CATEGORY_UNSPECIFIED\x10\x00\x12\x19\n" +
+	"\x15EVENT_CATEGORY_DOMAIN\x10\x01\x12\x16\n" +
+	"\x12EVENT_CATEGORY_DNS\x10\x02\x12\x18\n" +
+	"\x14EVENT_CATEGORY_WHOIS\x10\x03\x12\x17\n" +
+	"\x13EVENT_CATEGORY_CERT\x10\x04\x12\x1b\n" +
+	"\x17EVENT_CATEGORY_SECURITY\x10\x05\x12\x1f\n" +
+	"\x1bEVENT_CATEGORY_NOTIFICATION\x10\x06\x12\x19\n" +
+	"\x15EVENT_CATEGORY_SYSTEM\x10\a*\x9b\x01\n" +
 	"\rEventSeverity\x12\x1e\n" +
 	"\x1aEVENT_SEVERITY_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13EVENT_SEVERITY_INFO\x10\x01\x12\x1a\n" +
@@ -421,27 +827,41 @@ func file_dotily_activity_v1_event_proto_rawDescGZIP() []byte {
 }
 
 var file_dotily_activity_v1_event_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_dotily_activity_v1_event_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dotily_activity_v1_event_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_dotily_activity_v1_event_proto_goTypes = []any{
-	(EventKind)(0),                // 0: dotily.activity.v1.EventKind
+	(EventCategory)(0),            // 0: dotily.activity.v1.EventCategory
 	(EventSeverity)(0),            // 1: dotily.activity.v1.EventSeverity
 	(DeliveryStatus)(0),           // 2: dotily.activity.v1.DeliveryStatus
 	(*Event)(nil),                 // 3: dotily.activity.v1.Event
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),       // 5: google.protobuf.Struct
+	(*EventFilter)(nil),           // 4: dotily.activity.v1.EventFilter
+	(*EventsPage)(nil),            // 5: dotily.activity.v1.EventsPage
+	(*EventChannel)(nil),          // 6: dotily.activity.v1.EventChannel
+	(*EventToggle)(nil),           // 7: dotily.activity.v1.EventToggle
+	(*EventPrefs)(nil),            // 8: dotily.activity.v1.EventPrefs
+	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),       // 10: google.protobuf.Struct
 }
 var file_dotily_activity_v1_event_proto_depIdxs = []int32{
-	0, // 0: dotily.activity.v1.Event.kind:type_name -> dotily.activity.v1.EventKind
-	1, // 1: dotily.activity.v1.Event.severity:type_name -> dotily.activity.v1.EventSeverity
-	4, // 2: dotily.activity.v1.Event.occurred_at:type_name -> google.protobuf.Timestamp
-	2, // 3: dotily.activity.v1.Event.delivery_status:type_name -> dotily.activity.v1.DeliveryStatus
-	4, // 4: dotily.activity.v1.Event.sent_at:type_name -> google.protobuf.Timestamp
-	5, // 5: dotily.activity.v1.Event.payload:type_name -> google.protobuf.Struct
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	0,  // 0: dotily.activity.v1.Event.category:type_name -> dotily.activity.v1.EventCategory
+	1,  // 1: dotily.activity.v1.Event.severity:type_name -> dotily.activity.v1.EventSeverity
+	9,  // 2: dotily.activity.v1.Event.occurred_at:type_name -> google.protobuf.Timestamp
+	2,  // 3: dotily.activity.v1.Event.delivery_status:type_name -> dotily.activity.v1.DeliveryStatus
+	9,  // 4: dotily.activity.v1.Event.sent_at:type_name -> google.protobuf.Timestamp
+	10, // 5: dotily.activity.v1.Event.payload:type_name -> google.protobuf.Struct
+	9,  // 6: dotily.activity.v1.EventFilter.from:type_name -> google.protobuf.Timestamp
+	9,  // 7: dotily.activity.v1.EventFilter.to:type_name -> google.protobuf.Timestamp
+	3,  // 8: dotily.activity.v1.EventsPage.items:type_name -> dotily.activity.v1.Event
+	10, // 9: dotily.activity.v1.EventChannel.config:type_name -> google.protobuf.Struct
+	0,  // 10: dotily.activity.v1.EventToggle.category:type_name -> dotily.activity.v1.EventCategory
+	1,  // 11: dotily.activity.v1.EventToggle.min_severity:type_name -> dotily.activity.v1.EventSeverity
+	6,  // 12: dotily.activity.v1.EventPrefs.channels:type_name -> dotily.activity.v1.EventChannel
+	7,  // 13: dotily.activity.v1.EventPrefs.toggles:type_name -> dotily.activity.v1.EventToggle
+	9,  // 14: dotily.activity.v1.EventPrefs.updated_at:type_name -> google.protobuf.Timestamp
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_dotily_activity_v1_event_proto_init() }
@@ -456,7 +876,7 @@ func file_dotily_activity_v1_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_activity_v1_event_proto_rawDesc), len(file_dotily_activity_v1_event_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   1,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
