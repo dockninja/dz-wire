@@ -1,0 +1,59 @@
+// usage.proto
+syntax = "proto3";
+
+package dotily.activity.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/date.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivity";
+
+enum UsageMetric {
+  USAGE_METRIC_UNSPECIFIED = 0;
+  USAGE_METRIC_DNS_CHECK = 1;
+  USAGE_METRIC_WHOIS_CHECK = 2;
+  USAGE_METRIC_API_CALL = 3;
+  USAGE_METRIC_WORKER_CALL = 4;
+}
+
+message UsageCounts {
+  int64 ok = 1;
+  int64 err = 2;
+  google.protobuf.Timestamp last_at = 3; // unset => NULL
+}
+
+message UsageIncrement {
+  string user_id = 1; // UUID
+  UsageMetric metric = 2;
+  google.protobuf.Timestamp at = 3; // usually now() UTC
+  int64 ok_delta = 4; // typically 0 or 1
+  int64 err_delta = 5; // typically 0 or 1
+}
+
+message UsageRecord {
+  string id = 1; // UUID
+  string user_id = 2; // UUID
+  google.type.Date record_day = 3; // DATE
+  UsageMetric metric = 4;
+  UsageCounts counts = 5;
+
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message UsageMetricTotals {
+  UsageMetric metric = 1;
+  UsageCounts counts = 2;
+}
+
+message UsageQuery {
+  string user_id = 1; // UUID
+  google.type.Date from_day = 2; // inclusive
+  google.type.Date to_day = 3; // exclusive
+  repeated UsageMetric metrics = 4; // empty => all metrics
+}
+
+message UsageQueryResult {
+  repeated UsageRecord rows = 1; // per-day rows
+  repeated UsageMetricTotals totals = 2; // totals across the whole range
+}

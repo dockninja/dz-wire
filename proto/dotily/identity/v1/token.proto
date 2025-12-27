@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package dotily.identity.v1;
 
+import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentity";
@@ -13,6 +14,37 @@ enum TokenType {
   TOKEN_TYPE_MAGIC_LOGIN = 3;
 }
 
+message TokenPayload {
+  string device_id = 1;
+  string new_email = 2;
+  string redirect_to = 3;
+}
+
+message IssueTokenParam {
+  TokenType type = 1;
+  string user_id = 2; // UUID
+
+  // Duration until expiry (Go: TTL)
+  google.protobuf.Duration ttl = 3;
+
+  // Optional
+  TokenPayload payload = 4;
+
+  // Optional idempotency key
+  string dedup_key = 5;
+}
+
+message TokenGrant {
+  string user_id = 1; // UUID
+  TokenType type = 2;
+
+  // Optional
+  TokenPayload payload = 3;
+
+  // Useful to return (even if Go snippet omitted it earlier)
+  google.protobuf.Timestamp expires_at = 4;
+}
+
 message Token {
   // Identity
   string id = 1; // UUID
@@ -20,14 +52,17 @@ message Token {
 
   // Purpose / type
   TokenType type = 3;
+
   string token_hash = 4;
+  string dedup_key = 5;
+  TokenPayload payload = 6;
+
+  // Security / audit (keep if you actually store them)
+  string requested_ip = 7; // "203.0.113.10" or "2001:db8::1"
+  string user_agent = 8;
 
   // Lifecycle
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp expires_at = 6;
-  google.protobuf.Timestamp used_at = 7; // optional-ish (zero/absent => unused)
-
-  // Security / audit
-  string requested_ip = 8; // "203.0.113.10" or "2001:db8::1"
-  string user_agent = 9;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp expires_at = 10;
+  optional google.protobuf.Timestamp used_at = 11;
 }

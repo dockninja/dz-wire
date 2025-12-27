@@ -8,13 +8,18 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/activity/v1;pbactivity";
 
-enum EventKind {
-  EVENT_KIND_UNSPECIFIED = 0;
-  EVENT_KIND_DOMAIN = 1;
-  EVENT_KIND_NOTIFICATION = 2;
+enum EventCategory {
+  EVENT_CATEGORY_UNSPECIFIED = 0;
+  EVENT_CATEGORY_DOMAIN = 1; // expiry, status, transfer lock, ...
+  EVENT_CATEGORY_DNS = 2; // records/NS/MX changes, resolver errors, ...
+  EVENT_CATEGORY_WHOIS = 3; // rdap/whois changes
+  EVENT_CATEGORY_CERT = 4; // cert changed / expires soon
+  EVENT_CATEGORY_SECURITY = 5; // dnssec changed, suspicious changes, ...
+  EVENT_CATEGORY_NOTIFICATION = 6; // delivery lifecycle
+  EVENT_CATEGORY_SYSTEM = 7; // worker errors, rate limits, internal
 }
 
-// Adjust these to match your SQL enum app.event_severity if it differs.
+// Adjust to match your SQL enum app.event_severity if it differs.
 enum EventSeverity {
   EVENT_SEVERITY_UNSPECIFIED = 0;
   EVENT_SEVERITY_INFO = 1;
@@ -23,7 +28,7 @@ enum EventSeverity {
   EVENT_SEVERITY_CRITICAL = 4;
 }
 
-// Adjust these to match your SQL enum app.delivery_status if it differs.
+// Adjust to match your SQL enum app.delivery_status if it differs.
 enum DeliveryStatus {
   DELIVERY_STATUS_UNSPECIFIED = 0;
   DELIVERY_STATUS_PENDING = 1;
@@ -33,31 +38,70 @@ enum DeliveryStatus {
 }
 
 message Event {
-  // Identity
   string id = 1; // UUID
   string user_id = 2; // UUID
-  string domain_id = 3; // UUID
+  optional string domain_id = 3; // UUID (not all events are domain-bound)
 
-  // Classification
-  EventKind kind = 4; // domain | notification
-  string event_type = 5; // dns_changed, whois_changed, expires_soon, notification_sent...
+  EventCategory category = 4;
+
+  // Keep event_type as string for flexibility.
+  // Examples: "dns.changed", "whois.changed", "domain.expires_soon", "notification.sent"
+  string event_type = 5;
+
   EventSeverity severity = 6;
 
-  // Timeline
   google.protobuf.Timestamp occurred_at = 7;
 
-  // Optional links
   optional string dns_snapshot_id = 8; // UUID
   optional string whois_snapshot_id = 9; // UUID
-  optional string source_event_id = 10; // UUID (self-ref)
+  optional string source_event_id = 10; // UUID
 
-  // Notification fields (only meaningful when kind=NOTIFICATION)
-  optional string channel = 11; // telegram/email/webhook/...
+  // Notification fields (meaningful when category=NOTIFICATION)
+  optional string channel = 11; // "telegram" | "email" | "webhook" | ...
   optional DeliveryStatus delivery_status = 12;
   optional google.protobuf.Timestamp sent_at = 13;
   optional string provider_ref = 14;
   optional string error = 15;
 
-  // Payload / extra data
   google.protobuf.Struct payload = 16; // JSONB object
+}
+
+message EventFilter {
+  string user_id = 1;
+
+  uint32 limit = 2;
+  uint32 offset = 3;
+
+  repeated string types = 4;
+  repeated string tags = 5;
+
+  google.protobuf.Timestamp from = 6;
+  google.protobuf.Timestamp to = 7;
+}
+
+message EventsPage {
+  uint64 total = 1;
+  uint32 offset = 2;
+  uint32 limit = 3;
+  repeated Event items = 4;
+}
+
+message EventChannel {
+  string name = 1; // "email" | "telegram" | "webhook" | ...
+  bool enabled = 2;
+  google.protobuf.Struct config = 3; // optional
+}
+
+message EventToggle {
+  string event_type = 1; // e.g. "dns.changed" (optional)
+  EventCategory category = 2; // optional (broad)
+  bool enabled = 3;
+  EventSeverity min_severity = 4; // optional
+}
+
+message EventPrefs {
+  string user_id = 1;
+  repeated EventChannel channels = 2;
+  repeated EventToggle toggles = 3;
+  google.protobuf.Timestamp updated_at = 4;
 }

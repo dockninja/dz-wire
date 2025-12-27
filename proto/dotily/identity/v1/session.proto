@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package dotily.identity.v1;
 
+import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/identity/v1;pbidentity";
@@ -13,14 +14,29 @@ message Session {
   string user_id = 2;
   string token_hash = 3;
 
+  // Networking / device
+  string ip = 4; // string form: "203.0.113.10" or "2001:db8::1"
+  string user_agent = 5;
+
   // Lifecycle
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp expires_at = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp expires_at = 7;
 
   // Nullable fields
-  google.protobuf.Timestamp last_used_at = 6;
+  google.protobuf.Timestamp last_used_at = 8;
+}
 
-  // Networking / device
-  string ip = 7; // string form: "203.0.113.10" or "2001:db8::1"
-  string user_agent = 8;
+// SessionParam carries the context needed to touch a session (and optionally rotate it).
+// If ttl is set, treat it as a rotate request; otherwise it's a touch.
+message SessionParam {
+  // Required
+  bytes token_hash = 1;
+  google.protobuf.Timestamp now = 2;
+
+  // Optional
+  string ip = 3;
+  string user_agent = 4;
+
+  // Optional: when set => rotate
+  google.protobuf.Duration ttl = 5;
 }
