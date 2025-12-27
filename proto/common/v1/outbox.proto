@@ -1,0 +1,81 @@
+// outbox.proto
+syntax = "proto3";
+
+package common.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/dockninja/dz-wire/gen/go/common/v1;pbcommon";
+
+enum OutboxStatus {
+  OUTBOX_STATUS_UNSPECIFIED = 0;
+  OUTBOX_STATUS_PENDING = 1;
+  OUTBOX_STATUS_PROCESSING = 2;
+  OUTBOX_STATUS_SENT = 3;
+  OUTBOX_STATUS_FAILED = 4;
+}
+
+// Standard envelope stored in outbox.payload (JSON object).
+message OutboxEnvelope {
+  // UUID string
+  string event_id = 1;
+
+  // e.g. "identity.user.updated"
+  string type = 2;
+
+  // schema version for `data`
+  uint32 version = 3;
+
+  google.protobuf.Timestamp occurred_at = 4;
+
+  string correlation_id = 5;
+  string trace_id = 6;
+
+  // Domain-specific JSON object
+  google.protobuf.Struct data = 7;
+
+  // Extra JSON object
+  google.protobuf.Struct meta = 8;
+}
+
+// What you insert
+message OutboxEnqueue {
+  string topic = 1;
+
+  // Your DB enforces payload is a JSON object; envelope is an object.
+  OutboxEnvelope payload = 2;
+
+  // If unset, server can default to now()
+  google.protobuf.Timestamp available_at = 3;
+
+  // Optional idempotency key (empty = unset)
+  string dedup_key = 4;
+
+  // Optional transport-like metadata (not persisted unless you store it)
+  map<string, string> headers = 5;
+}
+
+// Row shape (what workers read)
+message OutboxRecord {
+  // UUID string (row id)
+  string id = 1;
+
+  string topic = 2;
+  string dedup_key = 3;
+
+  OutboxEnvelope payload = 4;
+
+  OutboxStatus status = 5;
+  uint32 attempts = 6;
+
+  google.protobuf.Timestamp available_at = 7;
+
+  google.protobuf.Timestamp locked_at = 8;
+  string locked_by = 9;
+
+  string last_error = 10;
+
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp sent_at = 12;
+}

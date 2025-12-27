@@ -1,3 +1,4 @@
+// types.proto
 syntax = "proto3";
 
 package common.v1;
