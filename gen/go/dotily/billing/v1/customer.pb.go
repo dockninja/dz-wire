@@ -25,12 +25,12 @@ const (
 )
 
 type Customer struct {
-	state    protoimpl.MessageState `protogen:"open.v1"`
-	UserId   string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Provider BillingProvider        `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
-	// External customer id in the provider system
-	CustomerId    string                 `protobuf:"bytes,3,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                       // UUID (billing.customers.id)
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // UUID
+	Provider      BillingProvider        `protobuf:"varint,3,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	CustomerId    string                 `protobuf:"bytes,4,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"` // provider customer id
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -65,6 +65,13 @@ func (*Customer) Descriptor() ([]byte, []int) {
 	return file_dotily_billing_v1_customer_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *Customer) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 func (x *Customer) GetUserId() string {
 	if x != nil {
 		return x.UserId
@@ -93,30 +100,29 @@ func (x *Customer) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-// For your service method (UpsertCustomer)
-type UpsertCustomerRequest struct {
+type UpsertCustomerParams struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // UUID
 	Provider      BillingProvider        `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
 	CustomerId    string                 `protobuf:"bytes,3,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpsertCustomerRequest) Reset() {
-	*x = UpsertCustomerRequest{}
+func (x *UpsertCustomerParams) Reset() {
+	*x = UpsertCustomerParams{}
 	mi := &file_dotily_billing_v1_customer_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpsertCustomerRequest) String() string {
+func (x *UpsertCustomerParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpsertCustomerRequest) ProtoMessage() {}
+func (*UpsertCustomerParams) ProtoMessage() {}
 
-func (x *UpsertCustomerRequest) ProtoReflect() protoreflect.Message {
+func (x *UpsertCustomerParams) ProtoReflect() protoreflect.Message {
 	mi := &file_dotily_billing_v1_customer_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -128,95 +134,50 @@ func (x *UpsertCustomerRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpsertCustomerRequest.ProtoReflect.Descriptor instead.
-func (*UpsertCustomerRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpsertCustomerParams.ProtoReflect.Descriptor instead.
+func (*UpsertCustomerParams) Descriptor() ([]byte, []int) {
 	return file_dotily_billing_v1_customer_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpsertCustomerRequest) GetUserId() string {
+func (x *UpsertCustomerParams) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *UpsertCustomerRequest) GetProvider() BillingProvider {
+func (x *UpsertCustomerParams) GetProvider() BillingProvider {
 	if x != nil {
 		return x.Provider
 	}
 	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
 }
 
-func (x *UpsertCustomerRequest) GetCustomerId() string {
+func (x *UpsertCustomerParams) GetCustomerId() string {
 	if x != nil {
 		return x.CustomerId
 	}
 	return ""
 }
 
-type UpsertCustomerResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Customer      *Customer              `protobuf:"bytes,1,opt,name=customer,proto3" json:"customer,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *UpsertCustomerResponse) Reset() {
-	*x = UpsertCustomerResponse{}
-	mi := &file_dotily_billing_v1_customer_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpsertCustomerResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpsertCustomerResponse) ProtoMessage() {}
-
-func (x *UpsertCustomerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dotily_billing_v1_customer_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpsertCustomerResponse.ProtoReflect.Descriptor instead.
-func (*UpsertCustomerResponse) Descriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_customer_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UpsertCustomerResponse) GetCustomer() *Customer {
-	if x != nil {
-		return x.Customer
-	}
-	return nil
-}
-
 var File_dotily_billing_v1_customer_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_customer_proto_rawDesc = "" +
 	"\n" +
-	" dotily/billing/v1/customer.proto\x12\x11dotily.billing.v1\x1a\x1fdotily/billing/v1/billing.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbf\x01\n" +
-	"\bCustomer\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12>\n" +
-	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1f\n" +
-	"\vcustomer_id\x18\x03 \x01(\tR\n" +
+	" dotily/billing/v1/customer.proto\x12\x11dotily.billing.v1\x1a\x1fdotily/billing/v1/billing.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcf\x01\n" +
+	"\bCustomer\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12>\n" +
+	"\bprovider\x18\x03 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1f\n" +
+	"\vcustomer_id\x18\x04 \x01(\tR\n" +
 	"customerId\x129\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\x91\x01\n" +
-	"\x15UpsertCustomerRequest\x12\x17\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\x90\x01\n" +
+	"\x14UpsertCustomerParams\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12>\n" +
 	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1f\n" +
 	"\vcustomer_id\x18\x03 \x01(\tR\n" +
-	"customerId\"Q\n" +
-	"\x16UpsertCustomerResponse\x127\n" +
-	"\bcustomer\x18\x01 \x01(\v2\x1b.dotily.billing.v1.CustomerR\bcustomerBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
+	"customerIdBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_customer_proto_rawDescOnce sync.Once
@@ -230,24 +191,22 @@ func file_dotily_billing_v1_customer_proto_rawDescGZIP() []byte {
 	return file_dotily_billing_v1_customer_proto_rawDescData
 }
 
-var file_dotily_billing_v1_customer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_dotily_billing_v1_customer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dotily_billing_v1_customer_proto_goTypes = []any{
-	(*Customer)(nil),               // 0: dotily.billing.v1.Customer
-	(*UpsertCustomerRequest)(nil),  // 1: dotily.billing.v1.UpsertCustomerRequest
-	(*UpsertCustomerResponse)(nil), // 2: dotily.billing.v1.UpsertCustomerResponse
-	(BillingProvider)(0),           // 3: dotily.billing.v1.BillingProvider
-	(*timestamppb.Timestamp)(nil),  // 4: google.protobuf.Timestamp
+	(*Customer)(nil),              // 0: dotily.billing.v1.Customer
+	(*UpsertCustomerParams)(nil),  // 1: dotily.billing.v1.UpsertCustomerParams
+	(BillingProvider)(0),          // 2: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_dotily_billing_v1_customer_proto_depIdxs = []int32{
-	3, // 0: dotily.billing.v1.Customer.provider:type_name -> dotily.billing.v1.BillingProvider
-	4, // 1: dotily.billing.v1.Customer.created_at:type_name -> google.protobuf.Timestamp
-	3, // 2: dotily.billing.v1.UpsertCustomerRequest.provider:type_name -> dotily.billing.v1.BillingProvider
-	0, // 3: dotily.billing.v1.UpsertCustomerResponse.customer:type_name -> dotily.billing.v1.Customer
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 0: dotily.billing.v1.Customer.provider:type_name -> dotily.billing.v1.BillingProvider
+	3, // 1: dotily.billing.v1.Customer.created_at:type_name -> google.protobuf.Timestamp
+	2, // 2: dotily.billing.v1.UpsertCustomerParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_customer_proto_init() }
@@ -262,7 +221,7 @@ func file_dotily_billing_v1_customer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_customer_proto_rawDesc), len(file_dotily_billing_v1_customer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -1,17 +1,15 @@
-// subscription.proto
 syntax = "proto3";
 
 package dotily.billing.v1;
 
 import "dotily/billing/v1/billing.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
 enum SubscriptionStatus {
   SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
-
-  // Common normalized states (map provider -> these)
   SUBSCRIPTION_STATUS_TRIALING = 1;
   SUBSCRIPTION_STATUS_ACTIVE = 2;
   SUBSCRIPTION_STATUS_PAST_DUE = 3;
@@ -23,47 +21,34 @@ enum SubscriptionStatus {
 }
 
 message Subscription {
-  int64 id = 1; // internal DB id
-  string user_id = 2;
-  int64 plan_id = 3;
-
-  BillingProvider provider = 4;
-  string subscription_id = 5; // external provider subscription id
-
-  SubscriptionStatus status = 6;
-
-  google.protobuf.Timestamp current_period_start = 7;
-  google.protobuf.Timestamp current_period_end = 8;
-
-  bool cancel_at_period_end = 9;
-
-  google.protobuf.Timestamp canceled_at = 10;
-  google.protobuf.Timestamp ended_at = 11;
-  google.protobuf.Timestamp trial_end = 12;
-
-  google.protobuf.Timestamp created_at = 13;
-  google.protobuf.Timestamp updated_at = 14;
-}
-
-message UpsertSubscriptionRequest {
-  string user_id = 1;
-  int64 plan_id = 2;
+  string id = 1; // UUID (db PK)
+  string user_id = 2; // UUID
 
   BillingProvider provider = 3;
-  string subscription_id = 4;
-
+  string subscription_id = 4; // provider id (unique per provider)
   SubscriptionStatus status = 5;
 
-  google.protobuf.Timestamp current_period_start = 6;
-  google.protobuf.Timestamp current_period_end = 7;
+  string plan_code = 6; // required (stable internal key)
+  string plan_id = 7; // UUID, empty => NULL
 
-  bool cancel_at_period_end = 8;
+  google.protobuf.Timestamp current_period_start = 8; // nullable (unset => NULL)
+  google.protobuf.Timestamp current_period_end = 9; // nullable
+  bool cancel_at_period_end = 10;
 
-  google.protobuf.Timestamp canceled_at = 9;
-  google.protobuf.Timestamp ended_at = 10;
-  google.protobuf.Timestamp trial_end = 11;
+  google.protobuf.Timestamp canceled_at = 11; // nullable
+  google.protobuf.Timestamp ended_at = 12; // nullable
+  google.protobuf.Timestamp trial_end = 13; // nullable
+
+  google.protobuf.Struct metadata = 14; // JSONB object
+
+  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp updated_at = 16;
 }
 
-message UpsertSubscriptionResponse {
+message UpsertSubscriptionParams {
+  Subscription subscription = 1;
+}
+
+message UpsertSubscriptionResult {
   Subscription subscription = 1;
 }

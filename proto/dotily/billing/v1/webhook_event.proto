@@ -3,37 +3,29 @@ syntax = "proto3";
 
 package dotily.billing.v1;
 
+import "dotily/billing/v1/billing.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbilling";
 
-enum PaymentProvider {
-  PAYMENT_PROVIDER_UNSPECIFIED = 0;
-  PAYMENT_PROVIDER_STRIPE = 1;
-  PAYMENT_PROVIDER_LEMONSQUEEZY = 2;
-}
-
 enum WebhookEventStatus {
-  WEBHOOK_EVENT_STATUS_UNSPECIFIED = 0; // 0
-  WEBHOOK_EVENT_STATUS_PENDING = 1; // 1
-  WEBHOOK_EVENT_STATUS_PROCESSED = 2; // 2
-  WEBHOOK_EVENT_STATUS_FAILED = 3; // 3
-  WEBHOOK_EVENT_STATUS_IGNORED = 4; // 4
+  WEBHOOK_EVENT_STATUS_UNSPECIFIED = 0;
+  WEBHOOK_EVENT_STATUS_PENDING = 1; // matches SQL default
+  WEBHOOK_EVENT_STATUS_PROCESSED = 2;
+  WEBHOOK_EVENT_STATUS_FAILED = 3;
+  WEBHOOK_EVENT_STATUS_IGNORED = 4;
 }
 
 message WebhookEvent {
-  // Identity
   string id = 1; // UUID
-  PaymentProvider provider = 2;
+  BillingProvider provider = 2;
   string event_id = 3;
 
-  // Lifecycle
   google.protobuf.Timestamp received_at = 4;
-  optional google.protobuf.Timestamp processed_at = 5;
-  WebhookEventStatus status = 6;
+  google.protobuf.Timestamp processed_at = 5; // unset => NULL
 
-  // Debugging
-  optional string error = 7;
-  google.protobuf.Struct payload = 8; // JSONB object
+  WebhookEventStatus status = 6;
+  string error = 7; // empty => NULL/none
+  google.protobuf.Struct payload = 8;
 }

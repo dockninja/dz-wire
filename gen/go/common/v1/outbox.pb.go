@@ -11,6 +11,7 @@ package pbcommon
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
@@ -80,22 +81,18 @@ func (OutboxStatus) EnumDescriptor() ([]byte, []int) {
 	return file_common_v1_outbox_proto_rawDescGZIP(), []int{0}
 }
 
-// Standard envelope stored in outbox.payload (JSON object).
 type OutboxEnvelope struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// UUID string
+	// Caller-generated id (not the DB row id)
 	EventId string `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	// e.g. "identity.user.updated"
-	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	// schema version for `data`
+	// e.g. "domain.changed"
+	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
 	Version       uint32                 `protobuf:"varint,3,opt,name=version,proto3" json:"version,omitempty"`
 	OccurredAt    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
 	CorrelationId string                 `protobuf:"bytes,5,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"`
 	TraceId       string                 `protobuf:"bytes,6,opt,name=trace_id,json=traceId,proto3" json:"trace_id,omitempty"`
-	// Domain-specific JSON object
-	Data *structpb.Struct `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
-	// Extra JSON object
-	Meta          *structpb.Struct `protobuf:"bytes,8,opt,name=meta,proto3" json:"meta,omitempty"`
+	Data          *structpb.Struct       `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
+	Meta          *structpb.Struct       `protobuf:"bytes,8,opt,name=meta,proto3" json:"meta,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,110 +183,27 @@ func (x *OutboxEnvelope) GetMeta() *structpb.Struct {
 	return nil
 }
 
-// What you insert
-type OutboxEnqueue struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	Topic string                 `protobuf:"bytes,1,opt,name=topic,proto3" json:"topic,omitempty"`
-	// Your DB enforces payload is a JSON object; envelope is an object.
-	Payload *OutboxEnvelope `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
-	// If unset, server can default to now()
-	AvailableAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=available_at,json=availableAt,proto3" json:"available_at,omitempty"`
-	// Optional idempotency key (empty = unset)
-	DedupKey string `protobuf:"bytes,4,opt,name=dedup_key,json=dedupKey,proto3" json:"dedup_key,omitempty"`
-	// Optional transport-like metadata (not persisted unless you store it)
-	Headers       map[string]string `protobuf:"bytes,5,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *OutboxEnqueue) Reset() {
-	*x = OutboxEnqueue{}
-	mi := &file_common_v1_outbox_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *OutboxEnqueue) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*OutboxEnqueue) ProtoMessage() {}
-
-func (x *OutboxEnqueue) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_outbox_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use OutboxEnqueue.ProtoReflect.Descriptor instead.
-func (*OutboxEnqueue) Descriptor() ([]byte, []int) {
-	return file_common_v1_outbox_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *OutboxEnqueue) GetTopic() string {
-	if x != nil {
-		return x.Topic
-	}
-	return ""
-}
-
-func (x *OutboxEnqueue) GetPayload() *OutboxEnvelope {
-	if x != nil {
-		return x.Payload
-	}
-	return nil
-}
-
-func (x *OutboxEnqueue) GetAvailableAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.AvailableAt
-	}
-	return nil
-}
-
-func (x *OutboxEnqueue) GetDedupKey() string {
-	if x != nil {
-		return x.DedupKey
-	}
-	return ""
-}
-
-func (x *OutboxEnqueue) GetHeaders() map[string]string {
-	if x != nil {
-		return x.Headers
-	}
-	return nil
-}
-
-// Row shape (what workers read)
 type OutboxRecord struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// UUID string (row id)
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID (row id)
 	Topic         string                 `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`
-	DedupKey      string                 `protobuf:"bytes,3,opt,name=dedup_key,json=dedupKey,proto3" json:"dedup_key,omitempty"`
+	DedupKey      string                 `protobuf:"bytes,3,opt,name=dedup_key,json=dedupKey,proto3" json:"dedup_key,omitempty"` // empty => NULL
 	Payload       *OutboxEnvelope        `protobuf:"bytes,4,opt,name=payload,proto3" json:"payload,omitempty"`
 	Status        OutboxStatus           `protobuf:"varint,5,opt,name=status,proto3,enum=common.v1.OutboxStatus" json:"status,omitempty"`
 	Attempts      uint32                 `protobuf:"varint,6,opt,name=attempts,proto3" json:"attempts,omitempty"`
 	AvailableAt   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=available_at,json=availableAt,proto3" json:"available_at,omitempty"`
-	LockedAt      *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=locked_at,json=lockedAt,proto3" json:"locked_at,omitempty"`
-	LockedBy      string                 `protobuf:"bytes,9,opt,name=locked_by,json=lockedBy,proto3" json:"locked_by,omitempty"`
-	LastError     string                 `protobuf:"bytes,10,opt,name=last_error,json=lastError,proto3" json:"last_error,omitempty"`
+	LockedAt      *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=locked_at,json=lockedAt,proto3" json:"locked_at,omitempty"`     // unset => NULL
+	LockedBy      string                 `protobuf:"bytes,9,opt,name=locked_by,json=lockedBy,proto3" json:"locked_by,omitempty"`     // empty => NULL
+	LastError     string                 `protobuf:"bytes,10,opt,name=last_error,json=lastError,proto3" json:"last_error,omitempty"` // empty => NULL
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	SentAt        *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`
+	SentAt        *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"` // unset => NULL
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *OutboxRecord) Reset() {
 	*x = OutboxRecord{}
-	mi := &file_common_v1_outbox_proto_msgTypes[2]
+	mi := &file_common_v1_outbox_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -301,7 +215,7 @@ func (x *OutboxRecord) String() string {
 func (*OutboxRecord) ProtoMessage() {}
 
 func (x *OutboxRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_common_v1_outbox_proto_msgTypes[2]
+	mi := &file_common_v1_outbox_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -314,7 +228,7 @@ func (x *OutboxRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OutboxRecord.ProtoReflect.Descriptor instead.
 func (*OutboxRecord) Descriptor() ([]byte, []int) {
-	return file_common_v1_outbox_proto_rawDescGZIP(), []int{2}
+	return file_common_v1_outbox_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *OutboxRecord) GetId() string {
@@ -401,11 +315,275 @@ func (x *OutboxRecord) GetSentAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type OutboxEnqueueParams struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Topic         string                 `protobuf:"bytes,1,opt,name=topic,proto3" json:"topic,omitempty"`
+	DedupKey      string                 `protobuf:"bytes,2,opt,name=dedup_key,json=dedupKey,proto3" json:"dedup_key,omitempty"` // empty => NULL
+	Payload       *OutboxEnvelope        `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	AvailableAt   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=available_at,json=availableAt,proto3" json:"available_at,omitempty"` // unset => now()
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OutboxEnqueueParams) Reset() {
+	*x = OutboxEnqueueParams{}
+	mi := &file_common_v1_outbox_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OutboxEnqueueParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OutboxEnqueueParams) ProtoMessage() {}
+
+func (x *OutboxEnqueueParams) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_outbox_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OutboxEnqueueParams.ProtoReflect.Descriptor instead.
+func (*OutboxEnqueueParams) Descriptor() ([]byte, []int) {
+	return file_common_v1_outbox_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *OutboxEnqueueParams) GetTopic() string {
+	if x != nil {
+		return x.Topic
+	}
+	return ""
+}
+
+func (x *OutboxEnqueueParams) GetDedupKey() string {
+	if x != nil {
+		return x.DedupKey
+	}
+	return ""
+}
+
+func (x *OutboxEnqueueParams) GetPayload() *OutboxEnvelope {
+	if x != nil {
+		return x.Payload
+	}
+	return nil
+}
+
+func (x *OutboxEnqueueParams) GetAvailableAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.AvailableAt
+	}
+	return nil
+}
+
+type OutboxEnqueueResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`            // UUID, empty if dedup prevented insert
+	Created       bool                   `protobuf:"varint,2,opt,name=created,proto3" json:"created,omitempty"` // inserted vs dedup no-op
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OutboxEnqueueResult) Reset() {
+	*x = OutboxEnqueueResult{}
+	mi := &file_common_v1_outbox_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OutboxEnqueueResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OutboxEnqueueResult) ProtoMessage() {}
+
+func (x *OutboxEnqueueResult) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_outbox_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OutboxEnqueueResult.ProtoReflect.Descriptor instead.
+func (*OutboxEnqueueResult) Descriptor() ([]byte, []int) {
+	return file_common_v1_outbox_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *OutboxEnqueueResult) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *OutboxEnqueueResult) GetCreated() bool {
+	if x != nil {
+		return x.Created
+	}
+	return false
+}
+
+type OutboxDequeueParams struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Topic         string                 `protobuf:"bytes,1,opt,name=topic,proto3" json:"topic,omitempty"` // empty => any
+	Limit         uint32                 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	WorkerId      string                 `protobuf:"bytes,3,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	Now           *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=now,proto3" json:"now,omitempty"` // unset => now()
+	LockFor       *durationpb.Duration   `protobuf:"bytes,5,opt,name=lock_for,json=lockFor,proto3" json:"lock_for,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OutboxDequeueParams) Reset() {
+	*x = OutboxDequeueParams{}
+	mi := &file_common_v1_outbox_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OutboxDequeueParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OutboxDequeueParams) ProtoMessage() {}
+
+func (x *OutboxDequeueParams) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_outbox_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OutboxDequeueParams.ProtoReflect.Descriptor instead.
+func (*OutboxDequeueParams) Descriptor() ([]byte, []int) {
+	return file_common_v1_outbox_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *OutboxDequeueParams) GetTopic() string {
+	if x != nil {
+		return x.Topic
+	}
+	return ""
+}
+
+func (x *OutboxDequeueParams) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *OutboxDequeueParams) GetWorkerId() string {
+	if x != nil {
+		return x.WorkerId
+	}
+	return ""
+}
+
+func (x *OutboxDequeueParams) GetNow() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Now
+	}
+	return nil
+}
+
+func (x *OutboxDequeueParams) GetLockFor() *durationpb.Duration {
+	if x != nil {
+		return x.LockFor
+	}
+	return nil
+}
+
+type OutboxFailParams struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
+	At            *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=at,proto3" json:"at,omitempty"` // unset => now()
+	Error         string                 `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
+	RetryAt       *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=retry_at,json=retryAt,proto3" json:"retry_at,omitempty"` // unset => mark failed
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OutboxFailParams) Reset() {
+	*x = OutboxFailParams{}
+	mi := &file_common_v1_outbox_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OutboxFailParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OutboxFailParams) ProtoMessage() {}
+
+func (x *OutboxFailParams) ProtoReflect() protoreflect.Message {
+	mi := &file_common_v1_outbox_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OutboxFailParams.ProtoReflect.Descriptor instead.
+func (*OutboxFailParams) Descriptor() ([]byte, []int) {
+	return file_common_v1_outbox_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *OutboxFailParams) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *OutboxFailParams) GetAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.At
+	}
+	return nil
+}
+
+func (x *OutboxFailParams) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+func (x *OutboxFailParams) GetRetryAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.RetryAt
+	}
+	return nil
+}
+
 var File_common_v1_outbox_proto protoreflect.FileDescriptor
 
 const file_common_v1_outbox_proto_rawDesc = "" +
 	"\n" +
-	"\x16common/v1/outbox.proto\x12\tcommon.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb2\x02\n" +
+	"\x16common/v1/outbox.proto\x12\tcommon.v1\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb2\x02\n" +
 	"\x0eOutboxEnvelope\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x18\n" +
@@ -415,16 +593,7 @@ const file_common_v1_outbox_proto_rawDesc = "" +
 	"\x0ecorrelation_id\x18\x05 \x01(\tR\rcorrelationId\x12\x19\n" +
 	"\btrace_id\x18\x06 \x01(\tR\atraceId\x12+\n" +
 	"\x04data\x18\a \x01(\v2\x17.google.protobuf.StructR\x04data\x12+\n" +
-	"\x04meta\x18\b \x01(\v2\x17.google.protobuf.StructR\x04meta\"\xb3\x02\n" +
-	"\rOutboxEnqueue\x12\x14\n" +
-	"\x05topic\x18\x01 \x01(\tR\x05topic\x123\n" +
-	"\apayload\x18\x02 \x01(\v2\x19.common.v1.OutboxEnvelopeR\apayload\x12=\n" +
-	"\favailable_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\vavailableAt\x12\x1b\n" +
-	"\tdedup_key\x18\x04 \x01(\tR\bdedupKey\x12?\n" +
-	"\aheaders\x18\x05 \x03(\v2%.common.v1.OutboxEnqueue.HeadersEntryR\aheaders\x1a:\n" +
-	"\fHeadersEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf7\x03\n" +
+	"\x04meta\x18\b \x01(\v2\x17.google.protobuf.StructR\x04meta\"\xf7\x03\n" +
 	"\fOutboxRecord\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05topic\x18\x02 \x01(\tR\x05topic\x12\x1b\n" +
@@ -440,7 +609,26 @@ const file_common_v1_outbox_proto_rawDesc = "" +
 	" \x01(\tR\tlastError\x129\n" +
 	"\n" +
 	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x123\n" +
-	"\asent_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\x06sentAt*\x98\x01\n" +
+	"\asent_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\x06sentAt\"\xbc\x01\n" +
+	"\x13OutboxEnqueueParams\x12\x14\n" +
+	"\x05topic\x18\x01 \x01(\tR\x05topic\x12\x1b\n" +
+	"\tdedup_key\x18\x02 \x01(\tR\bdedupKey\x123\n" +
+	"\apayload\x18\x03 \x01(\v2\x19.common.v1.OutboxEnvelopeR\apayload\x12=\n" +
+	"\favailable_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\vavailableAt\"?\n" +
+	"\x13OutboxEnqueueResult\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\acreated\x18\x02 \x01(\bR\acreated\"\xc2\x01\n" +
+	"\x13OutboxDequeueParams\x12\x14\n" +
+	"\x05topic\x18\x01 \x01(\tR\x05topic\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\rR\x05limit\x12\x1b\n" +
+	"\tworker_id\x18\x03 \x01(\tR\bworkerId\x12,\n" +
+	"\x03now\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x03now\x124\n" +
+	"\block_for\x18\x05 \x01(\v2\x19.google.protobuf.DurationR\alockFor\"\x9b\x01\n" +
+	"\x10OutboxFailParams\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
+	"\x02at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x02at\x12\x14\n" +
+	"\x05error\x18\x03 \x01(\tR\x05error\x125\n" +
+	"\bretry_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\aretryAt*\x98\x01\n" +
 	"\fOutboxStatus\x12\x1d\n" +
 	"\x19OUTBOX_STATUS_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15OUTBOX_STATUS_PENDING\x10\x01\x12\x1c\n" +
@@ -461,34 +649,40 @@ func file_common_v1_outbox_proto_rawDescGZIP() []byte {
 }
 
 var file_common_v1_outbox_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_common_v1_outbox_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_common_v1_outbox_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_common_v1_outbox_proto_goTypes = []any{
 	(OutboxStatus)(0),             // 0: common.v1.OutboxStatus
 	(*OutboxEnvelope)(nil),        // 1: common.v1.OutboxEnvelope
-	(*OutboxEnqueue)(nil),         // 2: common.v1.OutboxEnqueue
-	(*OutboxRecord)(nil),          // 3: common.v1.OutboxRecord
-	nil,                           // 4: common.v1.OutboxEnqueue.HeadersEntry
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),       // 6: google.protobuf.Struct
+	(*OutboxRecord)(nil),          // 2: common.v1.OutboxRecord
+	(*OutboxEnqueueParams)(nil),   // 3: common.v1.OutboxEnqueueParams
+	(*OutboxEnqueueResult)(nil),   // 4: common.v1.OutboxEnqueueResult
+	(*OutboxDequeueParams)(nil),   // 5: common.v1.OutboxDequeueParams
+	(*OutboxFailParams)(nil),      // 6: common.v1.OutboxFailParams
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),       // 8: google.protobuf.Struct
+	(*durationpb.Duration)(nil),   // 9: google.protobuf.Duration
 }
 var file_common_v1_outbox_proto_depIdxs = []int32{
-	5,  // 0: common.v1.OutboxEnvelope.occurred_at:type_name -> google.protobuf.Timestamp
-	6,  // 1: common.v1.OutboxEnvelope.data:type_name -> google.protobuf.Struct
-	6,  // 2: common.v1.OutboxEnvelope.meta:type_name -> google.protobuf.Struct
-	1,  // 3: common.v1.OutboxEnqueue.payload:type_name -> common.v1.OutboxEnvelope
-	5,  // 4: common.v1.OutboxEnqueue.available_at:type_name -> google.protobuf.Timestamp
-	4,  // 5: common.v1.OutboxEnqueue.headers:type_name -> common.v1.OutboxEnqueue.HeadersEntry
-	1,  // 6: common.v1.OutboxRecord.payload:type_name -> common.v1.OutboxEnvelope
-	0,  // 7: common.v1.OutboxRecord.status:type_name -> common.v1.OutboxStatus
-	5,  // 8: common.v1.OutboxRecord.available_at:type_name -> google.protobuf.Timestamp
-	5,  // 9: common.v1.OutboxRecord.locked_at:type_name -> google.protobuf.Timestamp
-	5,  // 10: common.v1.OutboxRecord.created_at:type_name -> google.protobuf.Timestamp
-	5,  // 11: common.v1.OutboxRecord.sent_at:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	7,  // 0: common.v1.OutboxEnvelope.occurred_at:type_name -> google.protobuf.Timestamp
+	8,  // 1: common.v1.OutboxEnvelope.data:type_name -> google.protobuf.Struct
+	8,  // 2: common.v1.OutboxEnvelope.meta:type_name -> google.protobuf.Struct
+	1,  // 3: common.v1.OutboxRecord.payload:type_name -> common.v1.OutboxEnvelope
+	0,  // 4: common.v1.OutboxRecord.status:type_name -> common.v1.OutboxStatus
+	7,  // 5: common.v1.OutboxRecord.available_at:type_name -> google.protobuf.Timestamp
+	7,  // 6: common.v1.OutboxRecord.locked_at:type_name -> google.protobuf.Timestamp
+	7,  // 7: common.v1.OutboxRecord.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 8: common.v1.OutboxRecord.sent_at:type_name -> google.protobuf.Timestamp
+	1,  // 9: common.v1.OutboxEnqueueParams.payload:type_name -> common.v1.OutboxEnvelope
+	7,  // 10: common.v1.OutboxEnqueueParams.available_at:type_name -> google.protobuf.Timestamp
+	7,  // 11: common.v1.OutboxDequeueParams.now:type_name -> google.protobuf.Timestamp
+	9,  // 12: common.v1.OutboxDequeueParams.lock_for:type_name -> google.protobuf.Duration
+	7,  // 13: common.v1.OutboxFailParams.at:type_name -> google.protobuf.Timestamp
+	7,  // 14: common.v1.OutboxFailParams.retry_at:type_name -> google.protobuf.Timestamp
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_common_v1_outbox_proto_init() }
@@ -502,7 +696,7 @@ func file_common_v1_outbox_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_v1_outbox_proto_rawDesc), len(file_common_v1_outbox_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

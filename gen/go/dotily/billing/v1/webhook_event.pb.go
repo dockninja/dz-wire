@@ -25,63 +25,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PaymentProvider int32
-
-const (
-	PaymentProvider_PAYMENT_PROVIDER_UNSPECIFIED  PaymentProvider = 0
-	PaymentProvider_PAYMENT_PROVIDER_STRIPE       PaymentProvider = 1
-	PaymentProvider_PAYMENT_PROVIDER_LEMONSQUEEZY PaymentProvider = 2
-)
-
-// Enum value maps for PaymentProvider.
-var (
-	PaymentProvider_name = map[int32]string{
-		0: "PAYMENT_PROVIDER_UNSPECIFIED",
-		1: "PAYMENT_PROVIDER_STRIPE",
-		2: "PAYMENT_PROVIDER_LEMONSQUEEZY",
-	}
-	PaymentProvider_value = map[string]int32{
-		"PAYMENT_PROVIDER_UNSPECIFIED":  0,
-		"PAYMENT_PROVIDER_STRIPE":       1,
-		"PAYMENT_PROVIDER_LEMONSQUEEZY": 2,
-	}
-)
-
-func (x PaymentProvider) Enum() *PaymentProvider {
-	p := new(PaymentProvider)
-	*p = x
-	return p
-}
-
-func (x PaymentProvider) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (PaymentProvider) Descriptor() protoreflect.EnumDescriptor {
-	return file_dotily_billing_v1_webhook_event_proto_enumTypes[0].Descriptor()
-}
-
-func (PaymentProvider) Type() protoreflect.EnumType {
-	return &file_dotily_billing_v1_webhook_event_proto_enumTypes[0]
-}
-
-func (x PaymentProvider) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use PaymentProvider.Descriptor instead.
-func (PaymentProvider) EnumDescriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_webhook_event_proto_rawDescGZIP(), []int{0}
-}
-
 type WebhookEventStatus int32
 
 const (
-	WebhookEventStatus_WEBHOOK_EVENT_STATUS_UNSPECIFIED WebhookEventStatus = 0 // 0
-	WebhookEventStatus_WEBHOOK_EVENT_STATUS_PENDING     WebhookEventStatus = 1 // 1
-	WebhookEventStatus_WEBHOOK_EVENT_STATUS_PROCESSED   WebhookEventStatus = 2 // 2
-	WebhookEventStatus_WEBHOOK_EVENT_STATUS_FAILED      WebhookEventStatus = 3 // 3
-	WebhookEventStatus_WEBHOOK_EVENT_STATUS_IGNORED     WebhookEventStatus = 4 // 4
+	WebhookEventStatus_WEBHOOK_EVENT_STATUS_UNSPECIFIED WebhookEventStatus = 0
+	WebhookEventStatus_WEBHOOK_EVENT_STATUS_PENDING     WebhookEventStatus = 1 // matches SQL default
+	WebhookEventStatus_WEBHOOK_EVENT_STATUS_PROCESSED   WebhookEventStatus = 2
+	WebhookEventStatus_WEBHOOK_EVENT_STATUS_FAILED      WebhookEventStatus = 3
+	WebhookEventStatus_WEBHOOK_EVENT_STATUS_IGNORED     WebhookEventStatus = 4
 )
 
 // Enum value maps for WebhookEventStatus.
@@ -113,11 +64,11 @@ func (x WebhookEventStatus) String() string {
 }
 
 func (WebhookEventStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_dotily_billing_v1_webhook_event_proto_enumTypes[1].Descriptor()
+	return file_dotily_billing_v1_webhook_event_proto_enumTypes[0].Descriptor()
 }
 
 func (WebhookEventStatus) Type() protoreflect.EnumType {
-	return &file_dotily_billing_v1_webhook_event_proto_enumTypes[1]
+	return &file_dotily_billing_v1_webhook_event_proto_enumTypes[0]
 }
 
 func (x WebhookEventStatus) Number() protoreflect.EnumNumber {
@@ -126,22 +77,19 @@ func (x WebhookEventStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WebhookEventStatus.Descriptor instead.
 func (WebhookEventStatus) EnumDescriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_webhook_event_proto_rawDescGZIP(), []int{1}
+	return file_dotily_billing_v1_webhook_event_proto_rawDescGZIP(), []int{0}
 }
 
 type WebhookEvent struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Identity
-	Id       string          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
-	Provider PaymentProvider `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.PaymentProvider" json:"provider,omitempty"`
-	EventId  string          `protobuf:"bytes,3,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	// Lifecycle
-	ReceivedAt  *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=received_at,json=receivedAt,proto3" json:"received_at,omitempty"`
-	ProcessedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=processed_at,json=processedAt,proto3,oneof" json:"processed_at,omitempty"`
-	Status      WebhookEventStatus     `protobuf:"varint,6,opt,name=status,proto3,enum=dotily.billing.v1.WebhookEventStatus" json:"status,omitempty"`
-	// Debugging
-	Error         *string          `protobuf:"bytes,7,opt,name=error,proto3,oneof" json:"error,omitempty"`
-	Payload       *structpb.Struct `protobuf:"bytes,8,opt,name=payload,proto3" json:"payload,omitempty"` // JSONB object
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
+	Provider      BillingProvider        `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	EventId       string                 `protobuf:"bytes,3,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	ReceivedAt    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=received_at,json=receivedAt,proto3" json:"received_at,omitempty"`
+	ProcessedAt   *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=processed_at,json=processedAt,proto3" json:"processed_at,omitempty"` // unset => NULL
+	Status        WebhookEventStatus     `protobuf:"varint,6,opt,name=status,proto3,enum=dotily.billing.v1.WebhookEventStatus" json:"status,omitempty"`
+	Error         string                 `protobuf:"bytes,7,opt,name=error,proto3" json:"error,omitempty"` // empty => NULL/none
+	Payload       *structpb.Struct       `protobuf:"bytes,8,opt,name=payload,proto3" json:"payload,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -183,11 +131,11 @@ func (x *WebhookEvent) GetId() string {
 	return ""
 }
 
-func (x *WebhookEvent) GetProvider() PaymentProvider {
+func (x *WebhookEvent) GetProvider() BillingProvider {
 	if x != nil {
 		return x.Provider
 	}
-	return PaymentProvider_PAYMENT_PROVIDER_UNSPECIFIED
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
 }
 
 func (x *WebhookEvent) GetEventId() string {
@@ -219,8 +167,8 @@ func (x *WebhookEvent) GetStatus() WebhookEventStatus {
 }
 
 func (x *WebhookEvent) GetError() string {
-	if x != nil && x.Error != nil {
-		return *x.Error
+	if x != nil {
+		return x.Error
 	}
 	return ""
 }
@@ -236,23 +184,17 @@ var File_dotily_billing_v1_webhook_event_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_webhook_event_proto_rawDesc = "" +
 	"\n" +
-	"%dotily/billing/v1/webhook_event.proto\x12\x11dotily.billing.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa2\x03\n" +
+	"%dotily/billing/v1/webhook_event.proto\x12\x11dotily.billing.v1\x1a\x1fdotily/billing/v1/billing.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfd\x02\n" +
 	"\fWebhookEvent\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12>\n" +
-	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.PaymentProviderR\bprovider\x12\x19\n" +
+	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x19\n" +
 	"\bevent_id\x18\x03 \x01(\tR\aeventId\x12;\n" +
 	"\vreceived_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"receivedAt\x12B\n" +
-	"\fprocessed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\vprocessedAt\x88\x01\x01\x12=\n" +
-	"\x06status\x18\x06 \x01(\x0e2%.dotily.billing.v1.WebhookEventStatusR\x06status\x12\x19\n" +
-	"\x05error\x18\a \x01(\tH\x01R\x05error\x88\x01\x01\x121\n" +
-	"\apayload\x18\b \x01(\v2\x17.google.protobuf.StructR\apayloadB\x0f\n" +
-	"\r_processed_atB\b\n" +
-	"\x06_error*s\n" +
-	"\x0fPaymentProvider\x12 \n" +
-	"\x1cPAYMENT_PROVIDER_UNSPECIFIED\x10\x00\x12\x1b\n" +
-	"\x17PAYMENT_PROVIDER_STRIPE\x10\x01\x12!\n" +
-	"\x1dPAYMENT_PROVIDER_LEMONSQUEEZY\x10\x02*\xc3\x01\n" +
+	"receivedAt\x12=\n" +
+	"\fprocessed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\vprocessedAt\x12=\n" +
+	"\x06status\x18\x06 \x01(\x0e2%.dotily.billing.v1.WebhookEventStatusR\x06status\x12\x14\n" +
+	"\x05error\x18\a \x01(\tR\x05error\x121\n" +
+	"\apayload\x18\b \x01(\v2\x17.google.protobuf.StructR\apayload*\xc3\x01\n" +
 	"\x12WebhookEventStatus\x12$\n" +
 	" WEBHOOK_EVENT_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cWEBHOOK_EVENT_STATUS_PENDING\x10\x01\x12\"\n" +
@@ -272,20 +214,20 @@ func file_dotily_billing_v1_webhook_event_proto_rawDescGZIP() []byte {
 	return file_dotily_billing_v1_webhook_event_proto_rawDescData
 }
 
-var file_dotily_billing_v1_webhook_event_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_dotily_billing_v1_webhook_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_dotily_billing_v1_webhook_event_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_dotily_billing_v1_webhook_event_proto_goTypes = []any{
-	(PaymentProvider)(0),          // 0: dotily.billing.v1.PaymentProvider
-	(WebhookEventStatus)(0),       // 1: dotily.billing.v1.WebhookEventStatus
-	(*WebhookEvent)(nil),          // 2: dotily.billing.v1.WebhookEvent
+	(WebhookEventStatus)(0),       // 0: dotily.billing.v1.WebhookEventStatus
+	(*WebhookEvent)(nil),          // 1: dotily.billing.v1.WebhookEvent
+	(BillingProvider)(0),          // 2: dotily.billing.v1.BillingProvider
 	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 	(*structpb.Struct)(nil),       // 4: google.protobuf.Struct
 }
 var file_dotily_billing_v1_webhook_event_proto_depIdxs = []int32{
-	0, // 0: dotily.billing.v1.WebhookEvent.provider:type_name -> dotily.billing.v1.PaymentProvider
+	2, // 0: dotily.billing.v1.WebhookEvent.provider:type_name -> dotily.billing.v1.BillingProvider
 	3, // 1: dotily.billing.v1.WebhookEvent.received_at:type_name -> google.protobuf.Timestamp
 	3, // 2: dotily.billing.v1.WebhookEvent.processed_at:type_name -> google.protobuf.Timestamp
-	1, // 3: dotily.billing.v1.WebhookEvent.status:type_name -> dotily.billing.v1.WebhookEventStatus
+	0, // 3: dotily.billing.v1.WebhookEvent.status:type_name -> dotily.billing.v1.WebhookEventStatus
 	4, // 4: dotily.billing.v1.WebhookEvent.payload:type_name -> google.protobuf.Struct
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
@@ -299,13 +241,13 @@ func file_dotily_billing_v1_webhook_event_proto_init() {
 	if File_dotily_billing_v1_webhook_event_proto != nil {
 		return
 	}
-	file_dotily_billing_v1_webhook_event_proto_msgTypes[0].OneofWrappers = []any{}
+	file_dotily_billing_v1_billing_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_webhook_event_proto_rawDesc), len(file_dotily_billing_v1_webhook_event_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,

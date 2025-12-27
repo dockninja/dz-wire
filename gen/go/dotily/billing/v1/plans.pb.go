@@ -13,7 +13,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -26,28 +25,115 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PlanPrice struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                     // UUID (billing.plan_prices.id)
+	PlanId        string                 `protobuf:"bytes,2,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`                               // UUID
+	Provider      BillingProvider        `protobuf:"varint,3,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"` // maps payment_provider
+	ProductId     string                 `protobuf:"bytes,4,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`                      // empty => NULL
+	PriceId       string                 `protobuf:"bytes,5,opt,name=price_id,json=priceId,proto3" json:"price_id,omitempty"`                            // required
+	Active        bool                   `protobuf:"varint,6,opt,name=active,proto3" json:"active,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlanPrice) Reset() {
+	*x = PlanPrice{}
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlanPrice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlanPrice) ProtoMessage() {}
+
+func (x *PlanPrice) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlanPrice.ProtoReflect.Descriptor instead.
+func (*PlanPrice) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PlanPrice) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PlanPrice) GetPlanId() string {
+	if x != nil {
+		return x.PlanId
+	}
+	return ""
+}
+
+func (x *PlanPrice) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *PlanPrice) GetProductId() string {
+	if x != nil {
+		return x.ProductId
+	}
+	return ""
+}
+
+func (x *PlanPrice) GetPriceId() string {
+	if x != nil {
+		return x.PriceId
+	}
+	return ""
+}
+
+func (x *PlanPrice) GetActive() bool {
+	if x != nil {
+		return x.Active
+	}
+	return false
+}
+
+func (x *PlanPrice) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 type Plan struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	Id    int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	// App-facing identity
-	Code   string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"` // "free", "pro", "team"
-	Name   string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Active bool   `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
-	// JSON object: limits/features
-	Entitlements *structpb.Struct `protobuf:"bytes,5,opt,name=entitlements,proto3" json:"entitlements,omitempty"`
-	// Optional provider mapping (if the plan is backed by Stripe/Lemon)
-	Provider      BillingProvider         `protobuf:"varint,6,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"` // if unspecified => no external provider mapping
-	ProductId     *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	PriceId       *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=price_id,json=priceId,proto3" json:"price_id,omitempty"`
-	CreatedAt     *timestamppb.Timestamp  `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp  `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`     // UUID (billing.plans.id)
+	Code          string                 `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"` // "free", "pro", "team"
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"` // maps plan_name
+	Active        bool                   `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
+	Entitlements  *structpb.Struct       `protobuf:"bytes,5,opt,name=entitlements,proto3" json:"entitlements,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Prices        []*PlanPrice           `protobuf:"bytes,8,rep,name=prices,proto3" json:"prices,omitempty"` // provider mappings (0..n)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Plan) Reset() {
 	*x = Plan{}
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[0]
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -59,7 +145,7 @@ func (x *Plan) String() string {
 func (*Plan) ProtoMessage() {}
 
 func (x *Plan) ProtoReflect() protoreflect.Message {
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[0]
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -72,14 +158,14 @@ func (x *Plan) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Plan.ProtoReflect.Descriptor instead.
 func (*Plan) Descriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{0}
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Plan) GetId() int64 {
+func (x *Plan) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *Plan) GetCode() string {
@@ -110,27 +196,6 @@ func (x *Plan) GetEntitlements() *structpb.Struct {
 	return nil
 }
 
-func (x *Plan) GetProvider() BillingProvider {
-	if x != nil {
-		return x.Provider
-	}
-	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
-}
-
-func (x *Plan) GetProductId() *wrapperspb.StringValue {
-	if x != nil {
-		return x.ProductId
-	}
-	return nil
-}
-
-func (x *Plan) GetPriceId() *wrapperspb.StringValue {
-	if x != nil {
-		return x.PriceId
-	}
-	return nil
-}
-
 func (x *Plan) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -145,34 +210,39 @@ func (x *Plan) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-type UpsertPlanRequest struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Code          string                  `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
-	Name          string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Active        bool                    `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
-	Entitlements  *structpb.Struct        `protobuf:"bytes,4,opt,name=entitlements,proto3" json:"entitlements,omitempty"`
-	Provider      BillingProvider         `protobuf:"varint,5,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
-	ProductId     *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	PriceId       *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=price_id,json=priceId,proto3" json:"price_id,omitempty"`
+func (x *Plan) GetPrices() []*PlanPrice {
+	if x != nil {
+		return x.Prices
+	}
+	return nil
+}
+
+type UpsertPlanParams struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID, empty => insert by code (or ignore)
+	Code          string                 `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Active        bool                   `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
+	Entitlements  *structpb.Struct       `protobuf:"bytes,5,opt,name=entitlements,proto3" json:"entitlements,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpsertPlanRequest) Reset() {
-	*x = UpsertPlanRequest{}
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[1]
+func (x *UpsertPlanParams) Reset() {
+	*x = UpsertPlanParams{}
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpsertPlanRequest) String() string {
+func (x *UpsertPlanParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpsertPlanRequest) ProtoMessage() {}
+func (*UpsertPlanParams) ProtoMessage() {}
 
-func (x *UpsertPlanRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[1]
+func (x *UpsertPlanParams) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -183,82 +253,72 @@ func (x *UpsertPlanRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpsertPlanRequest.ProtoReflect.Descriptor instead.
-func (*UpsertPlanRequest) Descriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use UpsertPlanParams.ProtoReflect.Descriptor instead.
+func (*UpsertPlanParams) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *UpsertPlanRequest) GetCode() string {
+func (x *UpsertPlanParams) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpsertPlanParams) GetCode() string {
 	if x != nil {
 		return x.Code
 	}
 	return ""
 }
 
-func (x *UpsertPlanRequest) GetName() string {
+func (x *UpsertPlanParams) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *UpsertPlanRequest) GetActive() bool {
+func (x *UpsertPlanParams) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
 	return false
 }
 
-func (x *UpsertPlanRequest) GetEntitlements() *structpb.Struct {
+func (x *UpsertPlanParams) GetEntitlements() *structpb.Struct {
 	if x != nil {
 		return x.Entitlements
 	}
 	return nil
 }
 
-func (x *UpsertPlanRequest) GetProvider() BillingProvider {
-	if x != nil {
-		return x.Provider
-	}
-	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
-}
-
-func (x *UpsertPlanRequest) GetProductId() *wrapperspb.StringValue {
-	if x != nil {
-		return x.ProductId
-	}
-	return nil
-}
-
-func (x *UpsertPlanRequest) GetPriceId() *wrapperspb.StringValue {
-	if x != nil {
-		return x.PriceId
-	}
-	return nil
-}
-
-type UpsertPlanResponse struct {
+type UpsertPlanPriceParams struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Plan          *Plan                  `protobuf:"bytes,1,opt,name=plan,proto3" json:"plan,omitempty"`
+	PlanId        string                 `protobuf:"bytes,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"` // UUID
+	Provider      BillingProvider        `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	ProductId     string                 `protobuf:"bytes,3,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"` // empty => NULL
+	PriceId       string                 `protobuf:"bytes,4,opt,name=price_id,json=priceId,proto3" json:"price_id,omitempty"`
+	Active        bool                   `protobuf:"varint,5,opt,name=active,proto3" json:"active,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpsertPlanResponse) Reset() {
-	*x = UpsertPlanResponse{}
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[2]
+func (x *UpsertPlanPriceParams) Reset() {
+	*x = UpsertPlanPriceParams{}
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpsertPlanResponse) String() string {
+func (x *UpsertPlanPriceParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpsertPlanResponse) ProtoMessage() {}
+func (*UpsertPlanPriceParams) ProtoMessage() {}
 
-func (x *UpsertPlanResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dotily_billing_v1_plans_proto_msgTypes[2]
+func (x *UpsertPlanPriceParams) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -269,49 +329,85 @@ func (x *UpsertPlanResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpsertPlanResponse.ProtoReflect.Descriptor instead.
-func (*UpsertPlanResponse) Descriptor() ([]byte, []int) {
-	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use UpsertPlanPriceParams.ProtoReflect.Descriptor instead.
+func (*UpsertPlanPriceParams) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *UpsertPlanResponse) GetPlan() *Plan {
+func (x *UpsertPlanPriceParams) GetPlanId() string {
 	if x != nil {
-		return x.Plan
+		return x.PlanId
 	}
-	return nil
+	return ""
+}
+
+func (x *UpsertPlanPriceParams) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *UpsertPlanPriceParams) GetProductId() string {
+	if x != nil {
+		return x.ProductId
+	}
+	return ""
+}
+
+func (x *UpsertPlanPriceParams) GetPriceId() string {
+	if x != nil {
+		return x.PriceId
+	}
+	return ""
+}
+
+func (x *UpsertPlanPriceParams) GetActive() bool {
+	if x != nil {
+		return x.Active
+	}
+	return false
 }
 
 var File_dotily_billing_v1_plans_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_plans_proto_rawDesc = "" +
 	"\n" +
-	"\x1ddotily/billing/v1/plans.proto\x12\x11dotily.billing.v1\x1a\x1fdotily/billing/v1/billing.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xbf\x03\n" +
+	"\x1ddotily/billing/v1/plans.proto\x12\x11dotily.billing.v1\x1a\x1fdotily/billing/v1/billing.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x81\x02\n" +
+	"\tPlanPrice\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\aplan_id\x18\x02 \x01(\tR\x06planId\x12>\n" +
+	"\bprovider\x18\x03 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x04 \x01(\tR\tproductId\x12\x19\n" +
+	"\bprice_id\x18\x05 \x01(\tR\apriceId\x12\x16\n" +
+	"\x06active\x18\x06 \x01(\bR\x06active\x129\n" +
+	"\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xbf\x02\n" +
 	"\x04Plan\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
 	"\x06active\x18\x04 \x01(\bR\x06active\x12;\n" +
-	"\fentitlements\x18\x05 \x01(\v2\x17.google.protobuf.StructR\fentitlements\x12>\n" +
-	"\bprovider\x18\x06 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12;\n" +
+	"\fentitlements\x18\x05 \x01(\v2\x17.google.protobuf.StructR\fentitlements\x129\n" +
 	"\n" +
-	"product_id\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\tproductId\x127\n" +
-	"\bprice_id\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\apriceId\x129\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x124\n" +
+	"\x06prices\x18\b \x03(\v2\x1c.dotily.billing.v1.PlanPriceR\x06prices\"\x9f\x01\n" +
+	"\x10UpsertPlanParams\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
+	"\x06active\x18\x04 \x01(\bR\x06active\x12;\n" +
+	"\fentitlements\x18\x05 \x01(\v2\x17.google.protobuf.StructR\fentitlements\"\xc2\x01\n" +
+	"\x15UpsertPlanPriceParams\x12\x17\n" +
+	"\aplan_id\x18\x01 \x01(\tR\x06planId\x12>\n" +
+	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xc6\x02\n" +
-	"\x11UpsertPlanRequest\x12\x12\n" +
-	"\x04code\x18\x01 \x01(\tR\x04code\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06active\x18\x03 \x01(\bR\x06active\x12;\n" +
-	"\fentitlements\x18\x04 \x01(\v2\x17.google.protobuf.StructR\fentitlements\x12>\n" +
-	"\bprovider\x18\x05 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12;\n" +
-	"\n" +
-	"product_id\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tproductId\x127\n" +
-	"\bprice_id\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\apriceId\"A\n" +
-	"\x12UpsertPlanResponse\x12+\n" +
-	"\x04plan\x18\x01 \x01(\v2\x17.dotily.billing.v1.PlanR\x04planBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
+	"product_id\x18\x03 \x01(\tR\tproductId\x12\x19\n" +
+	"\bprice_id\x18\x04 \x01(\tR\apriceId\x12\x16\n" +
+	"\x06active\x18\x05 \x01(\bR\x06activeBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_plans_proto_rawDescOnce sync.Once
@@ -325,33 +421,30 @@ func file_dotily_billing_v1_plans_proto_rawDescGZIP() []byte {
 	return file_dotily_billing_v1_plans_proto_rawDescData
 }
 
-var file_dotily_billing_v1_plans_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_dotily_billing_v1_plans_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_dotily_billing_v1_plans_proto_goTypes = []any{
-	(*Plan)(nil),                   // 0: dotily.billing.v1.Plan
-	(*UpsertPlanRequest)(nil),      // 1: dotily.billing.v1.UpsertPlanRequest
-	(*UpsertPlanResponse)(nil),     // 2: dotily.billing.v1.UpsertPlanResponse
-	(*structpb.Struct)(nil),        // 3: google.protobuf.Struct
-	(BillingProvider)(0),           // 4: dotily.billing.v1.BillingProvider
-	(*wrapperspb.StringValue)(nil), // 5: google.protobuf.StringValue
-	(*timestamppb.Timestamp)(nil),  // 6: google.protobuf.Timestamp
+	(*PlanPrice)(nil),             // 0: dotily.billing.v1.PlanPrice
+	(*Plan)(nil),                  // 1: dotily.billing.v1.Plan
+	(*UpsertPlanParams)(nil),      // 2: dotily.billing.v1.UpsertPlanParams
+	(*UpsertPlanPriceParams)(nil), // 3: dotily.billing.v1.UpsertPlanPriceParams
+	(BillingProvider)(0),          // 4: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),       // 6: google.protobuf.Struct
 }
 var file_dotily_billing_v1_plans_proto_depIdxs = []int32{
-	3,  // 0: dotily.billing.v1.Plan.entitlements:type_name -> google.protobuf.Struct
-	4,  // 1: dotily.billing.v1.Plan.provider:type_name -> dotily.billing.v1.BillingProvider
-	5,  // 2: dotily.billing.v1.Plan.product_id:type_name -> google.protobuf.StringValue
-	5,  // 3: dotily.billing.v1.Plan.price_id:type_name -> google.protobuf.StringValue
-	6,  // 4: dotily.billing.v1.Plan.created_at:type_name -> google.protobuf.Timestamp
-	6,  // 5: dotily.billing.v1.Plan.updated_at:type_name -> google.protobuf.Timestamp
-	3,  // 6: dotily.billing.v1.UpsertPlanRequest.entitlements:type_name -> google.protobuf.Struct
-	4,  // 7: dotily.billing.v1.UpsertPlanRequest.provider:type_name -> dotily.billing.v1.BillingProvider
-	5,  // 8: dotily.billing.v1.UpsertPlanRequest.product_id:type_name -> google.protobuf.StringValue
-	5,  // 9: dotily.billing.v1.UpsertPlanRequest.price_id:type_name -> google.protobuf.StringValue
-	0,  // 10: dotily.billing.v1.UpsertPlanResponse.plan:type_name -> dotily.billing.v1.Plan
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	4, // 0: dotily.billing.v1.PlanPrice.provider:type_name -> dotily.billing.v1.BillingProvider
+	5, // 1: dotily.billing.v1.PlanPrice.created_at:type_name -> google.protobuf.Timestamp
+	6, // 2: dotily.billing.v1.Plan.entitlements:type_name -> google.protobuf.Struct
+	5, // 3: dotily.billing.v1.Plan.created_at:type_name -> google.protobuf.Timestamp
+	5, // 4: dotily.billing.v1.Plan.updated_at:type_name -> google.protobuf.Timestamp
+	0, // 5: dotily.billing.v1.Plan.prices:type_name -> dotily.billing.v1.PlanPrice
+	6, // 6: dotily.billing.v1.UpsertPlanParams.entitlements:type_name -> google.protobuf.Struct
+	4, // 7: dotily.billing.v1.UpsertPlanPriceParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_plans_proto_init() }
@@ -366,7 +459,7 @@ func file_dotily_billing_v1_plans_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_plans_proto_rawDesc), len(file_dotily_billing_v1_plans_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
