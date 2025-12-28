@@ -21,3 +21,8 @@ message UpsertCustomerParams {
   BillingProvider provider = 2;
   string customer_id = 3;
 }
+
+message GetCustomerParams {
+  string user_id = 1; // UUID
+  BillingProvider provider = 2;
+}

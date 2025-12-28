@@ -285,6 +285,122 @@ func (x *ListInvoicesParams) GetSubscriptionId() string {
 	return ""
 }
 
+type UpsertInvoiceParams struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	UserId           string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Provider         BillingProvider        `protobuf:"varint,2,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	InvoiceId        string                 `protobuf:"bytes,3,opt,name=invoice_id,json=invoiceId,proto3" json:"invoice_id,omitempty"`
+	Status           InvoiceStatus          `protobuf:"varint,4,opt,name=status,proto3,enum=dotily.billing.v1.InvoiceStatus" json:"status,omitempty"`
+	Currency         string                 `protobuf:"bytes,5,opt,name=currency,proto3" json:"currency,omitempty"`
+	Total            int64                  `protobuf:"varint,6,opt,name=total,proto3" json:"total,omitempty"`
+	AmountPaid       int64                  `protobuf:"varint,7,opt,name=amount_paid,json=amountPaid,proto3" json:"amount_paid,omitempty"`
+	HostedInvoiceUrl string                 `protobuf:"bytes,8,opt,name=hosted_invoice_url,json=hostedInvoiceUrl,proto3" json:"hosted_invoice_url,omitempty"` // empty => NULL
+	InvoicePdfUrl    string                 `protobuf:"bytes,9,opt,name=invoice_pdf_url,json=invoicePdfUrl,proto3" json:"invoice_pdf_url,omitempty"`          // empty => NULL
+	SubscriptionId   string                 `protobuf:"bytes,10,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`        // empty => NULL
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *UpsertInvoiceParams) Reset() {
+	*x = UpsertInvoiceParams{}
+	mi := &file_dotily_billing_v1_invoice_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpsertInvoiceParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpsertInvoiceParams) ProtoMessage() {}
+
+func (x *UpsertInvoiceParams) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_invoice_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpsertInvoiceParams.ProtoReflect.Descriptor instead.
+func (*UpsertInvoiceParams) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_invoice_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UpsertInvoiceParams) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *UpsertInvoiceParams) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *UpsertInvoiceParams) GetInvoiceId() string {
+	if x != nil {
+		return x.InvoiceId
+	}
+	return ""
+}
+
+func (x *UpsertInvoiceParams) GetStatus() InvoiceStatus {
+	if x != nil {
+		return x.Status
+	}
+	return InvoiceStatus_INVOICE_STATUS_UNSPECIFIED
+}
+
+func (x *UpsertInvoiceParams) GetCurrency() string {
+	if x != nil {
+		return x.Currency
+	}
+	return ""
+}
+
+func (x *UpsertInvoiceParams) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *UpsertInvoiceParams) GetAmountPaid() int64 {
+	if x != nil {
+		return x.AmountPaid
+	}
+	return 0
+}
+
+func (x *UpsertInvoiceParams) GetHostedInvoiceUrl() string {
+	if x != nil {
+		return x.HostedInvoiceUrl
+	}
+	return ""
+}
+
+func (x *UpsertInvoiceParams) GetInvoicePdfUrl() string {
+	if x != nil {
+		return x.InvoicePdfUrl
+	}
+	return ""
+}
+
+func (x *UpsertInvoiceParams) GetSubscriptionId() string {
+	if x != nil {
+		return x.SubscriptionId
+	}
+	return ""
+}
+
 var File_dotily_billing_v1_invoice_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_invoice_proto_rawDesc = "" +
@@ -312,7 +428,21 @@ const file_dotily_billing_v1_invoice_proto_rawDesc = "" +
 	"\x12ListInvoicesParams\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12'\n" +
-	"\x0fsubscription_id\x18\x03 \x01(\tR\x0esubscriptionId*\xd3\x01\n" +
+	"\x0fsubscription_id\x18\x03 \x01(\tR\x0esubscriptionId\"\x99\x03\n" +
+	"\x13UpsertInvoiceParams\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12>\n" +
+	"\bprovider\x18\x02 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x1d\n" +
+	"\n" +
+	"invoice_id\x18\x03 \x01(\tR\tinvoiceId\x128\n" +
+	"\x06status\x18\x04 \x01(\x0e2 .dotily.billing.v1.InvoiceStatusR\x06status\x12\x1a\n" +
+	"\bcurrency\x18\x05 \x01(\tR\bcurrency\x12\x14\n" +
+	"\x05total\x18\x06 \x01(\x03R\x05total\x12\x1f\n" +
+	"\vamount_paid\x18\a \x01(\x03R\n" +
+	"amountPaid\x12,\n" +
+	"\x12hosted_invoice_url\x18\b \x01(\tR\x10hostedInvoiceUrl\x12&\n" +
+	"\x0finvoice_pdf_url\x18\t \x01(\tR\rinvoicePdfUrl\x12'\n" +
+	"\x0fsubscription_id\x18\n" +
+	" \x01(\tR\x0esubscriptionId*\xd3\x01\n" +
 	"\rInvoiceStatus\x12\x1e\n" +
 	"\x1aINVOICE_STATUS_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14INVOICE_STATUS_DRAFT\x10\x01\x12\x17\n" +
@@ -335,24 +465,27 @@ func file_dotily_billing_v1_invoice_proto_rawDescGZIP() []byte {
 }
 
 var file_dotily_billing_v1_invoice_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_dotily_billing_v1_invoice_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_dotily_billing_v1_invoice_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_dotily_billing_v1_invoice_proto_goTypes = []any{
 	(InvoiceStatus)(0),            // 0: dotily.billing.v1.InvoiceStatus
 	(*Invoice)(nil),               // 1: dotily.billing.v1.Invoice
 	(*ListInvoicesParams)(nil),    // 2: dotily.billing.v1.ListInvoicesParams
-	(BillingProvider)(0),          // 3: dotily.billing.v1.BillingProvider
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*UpsertInvoiceParams)(nil),   // 3: dotily.billing.v1.UpsertInvoiceParams
+	(BillingProvider)(0),          // 4: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_dotily_billing_v1_invoice_proto_depIdxs = []int32{
-	3, // 0: dotily.billing.v1.Invoice.provider:type_name -> dotily.billing.v1.BillingProvider
+	4, // 0: dotily.billing.v1.Invoice.provider:type_name -> dotily.billing.v1.BillingProvider
 	0, // 1: dotily.billing.v1.Invoice.status:type_name -> dotily.billing.v1.InvoiceStatus
-	4, // 2: dotily.billing.v1.Invoice.created_at:type_name -> google.protobuf.Timestamp
-	4, // 3: dotily.billing.v1.Invoice.updated_at:type_name -> google.protobuf.Timestamp
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5, // 2: dotily.billing.v1.Invoice.created_at:type_name -> google.protobuf.Timestamp
+	5, // 3: dotily.billing.v1.Invoice.updated_at:type_name -> google.protobuf.Timestamp
+	4, // 4: dotily.billing.v1.UpsertInvoiceParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	0, // 5: dotily.billing.v1.UpsertInvoiceParams.status:type_name -> dotily.billing.v1.InvoiceStatus
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_invoice_proto_init() }
@@ -367,7 +500,7 @@ func file_dotily_billing_v1_invoice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_invoice_proto_rawDesc), len(file_dotily_billing_v1_invoice_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

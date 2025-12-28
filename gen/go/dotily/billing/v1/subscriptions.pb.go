@@ -298,27 +298,35 @@ func (x *UpsertSubscriptionParams) GetSubscription() *Subscription {
 	return nil
 }
 
-type UpsertSubscriptionResult struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Subscription  *Subscription          `protobuf:"bytes,1,opt,name=subscription,proto3" json:"subscription,omitempty"`
+type SubscriptionFilter struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// If set, filter subscriptions for a single user (common case).
+	// Empty => all users (admin).
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// Convenience filter: ended_at IS NULL
+	ActiveOnly bool `protobuf:"varint,2,opt,name=active_only,json=activeOnly,proto3" json:"active_only,omitempty"`
+	// Empty => any provider/status/plan
+	Providers     []BillingProvider    `protobuf:"varint,3,rep,packed,name=providers,proto3,enum=dotily.billing.v1.BillingProvider" json:"providers,omitempty"`
+	Statuses      []SubscriptionStatus `protobuf:"varint,4,rep,packed,name=statuses,proto3,enum=dotily.billing.v1.SubscriptionStatus" json:"statuses,omitempty"`
+	PlanCodes     []string             `protobuf:"bytes,5,rep,name=plan_codes,json=planCodes,proto3" json:"plan_codes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpsertSubscriptionResult) Reset() {
-	*x = UpsertSubscriptionResult{}
+func (x *SubscriptionFilter) Reset() {
+	*x = SubscriptionFilter{}
 	mi := &file_dotily_billing_v1_subscriptions_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpsertSubscriptionResult) String() string {
+func (x *SubscriptionFilter) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpsertSubscriptionResult) ProtoMessage() {}
+func (*SubscriptionFilter) ProtoMessage() {}
 
-func (x *UpsertSubscriptionResult) ProtoReflect() protoreflect.Message {
+func (x *SubscriptionFilter) ProtoReflect() protoreflect.Message {
 	mi := &file_dotily_billing_v1_subscriptions_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -330,14 +338,110 @@ func (x *UpsertSubscriptionResult) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpsertSubscriptionResult.ProtoReflect.Descriptor instead.
-func (*UpsertSubscriptionResult) Descriptor() ([]byte, []int) {
+// Deprecated: Use SubscriptionFilter.ProtoReflect.Descriptor instead.
+func (*SubscriptionFilter) Descriptor() ([]byte, []int) {
 	return file_dotily_billing_v1_subscriptions_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *UpsertSubscriptionResult) GetSubscription() *Subscription {
+func (x *SubscriptionFilter) GetUserId() string {
 	if x != nil {
-		return x.Subscription
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SubscriptionFilter) GetActiveOnly() bool {
+	if x != nil {
+		return x.ActiveOnly
+	}
+	return false
+}
+
+func (x *SubscriptionFilter) GetProviders() []BillingProvider {
+	if x != nil {
+		return x.Providers
+	}
+	return nil
+}
+
+func (x *SubscriptionFilter) GetStatuses() []SubscriptionStatus {
+	if x != nil {
+		return x.Statuses
+	}
+	return nil
+}
+
+func (x *SubscriptionFilter) GetPlanCodes() []string {
+	if x != nil {
+		return x.PlanCodes
+	}
+	return nil
+}
+
+type SubscriptionsPage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         uint64                 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Offset        uint32                 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Limit         uint32                 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Items         []*Subscription        `protobuf:"bytes,4,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubscriptionsPage) Reset() {
+	*x = SubscriptionsPage{}
+	mi := &file_dotily_billing_v1_subscriptions_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubscriptionsPage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubscriptionsPage) ProtoMessage() {}
+
+func (x *SubscriptionsPage) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_subscriptions_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubscriptionsPage.ProtoReflect.Descriptor instead.
+func (*SubscriptionsPage) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_subscriptions_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SubscriptionsPage) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *SubscriptionsPage) GetOffset() uint32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *SubscriptionsPage) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *SubscriptionsPage) GetItems() []*Subscription {
+	if x != nil {
+		return x.Items
 	}
 	return nil
 }
@@ -369,9 +473,20 @@ const file_dotily_billing_v1_subscriptions_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"_\n" +
 	"\x18UpsertSubscriptionParams\x12C\n" +
-	"\fsubscription\x18\x01 \x01(\v2\x1f.dotily.billing.v1.SubscriptionR\fsubscription\"_\n" +
-	"\x18UpsertSubscriptionResult\x12C\n" +
-	"\fsubscription\x18\x01 \x01(\v2\x1f.dotily.billing.v1.SubscriptionR\fsubscription*\xc4\x02\n" +
+	"\fsubscription\x18\x01 \x01(\v2\x1f.dotily.billing.v1.SubscriptionR\fsubscription\"\xf2\x01\n" +
+	"\x12SubscriptionFilter\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1f\n" +
+	"\vactive_only\x18\x02 \x01(\bR\n" +
+	"activeOnly\x12@\n" +
+	"\tproviders\x18\x03 \x03(\x0e2\".dotily.billing.v1.BillingProviderR\tproviders\x12A\n" +
+	"\bstatuses\x18\x04 \x03(\x0e2%.dotily.billing.v1.SubscriptionStatusR\bstatuses\x12\x1d\n" +
+	"\n" +
+	"plan_codes\x18\x05 \x03(\tR\tplanCodes\"\x8e\x01\n" +
+	"\x11SubscriptionsPage\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x04R\x05total\x12\x16\n" +
+	"\x06offset\x18\x02 \x01(\rR\x06offset\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\rR\x05limit\x125\n" +
+	"\x05items\x18\x04 \x03(\v2\x1f.dotily.billing.v1.SubscriptionR\x05items*\xc4\x02\n" +
 	"\x12SubscriptionStatus\x12#\n" +
 	"\x1fSUBSCRIPTION_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cSUBSCRIPTION_STATUS_TRIALING\x10\x01\x12\x1e\n" +
@@ -396,34 +511,37 @@ func file_dotily_billing_v1_subscriptions_proto_rawDescGZIP() []byte {
 }
 
 var file_dotily_billing_v1_subscriptions_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_dotily_billing_v1_subscriptions_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_dotily_billing_v1_subscriptions_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_dotily_billing_v1_subscriptions_proto_goTypes = []any{
 	(SubscriptionStatus)(0),          // 0: dotily.billing.v1.SubscriptionStatus
 	(*Subscription)(nil),             // 1: dotily.billing.v1.Subscription
 	(*UpsertSubscriptionParams)(nil), // 2: dotily.billing.v1.UpsertSubscriptionParams
-	(*UpsertSubscriptionResult)(nil), // 3: dotily.billing.v1.UpsertSubscriptionResult
-	(BillingProvider)(0),             // 4: dotily.billing.v1.BillingProvider
-	(*timestamppb.Timestamp)(nil),    // 5: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),          // 6: google.protobuf.Struct
+	(*SubscriptionFilter)(nil),       // 3: dotily.billing.v1.SubscriptionFilter
+	(*SubscriptionsPage)(nil),        // 4: dotily.billing.v1.SubscriptionsPage
+	(BillingProvider)(0),             // 5: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil),    // 6: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),          // 7: google.protobuf.Struct
 }
 var file_dotily_billing_v1_subscriptions_proto_depIdxs = []int32{
-	4,  // 0: dotily.billing.v1.Subscription.provider:type_name -> dotily.billing.v1.BillingProvider
+	5,  // 0: dotily.billing.v1.Subscription.provider:type_name -> dotily.billing.v1.BillingProvider
 	0,  // 1: dotily.billing.v1.Subscription.status:type_name -> dotily.billing.v1.SubscriptionStatus
-	5,  // 2: dotily.billing.v1.Subscription.current_period_start:type_name -> google.protobuf.Timestamp
-	5,  // 3: dotily.billing.v1.Subscription.current_period_end:type_name -> google.protobuf.Timestamp
-	5,  // 4: dotily.billing.v1.Subscription.canceled_at:type_name -> google.protobuf.Timestamp
-	5,  // 5: dotily.billing.v1.Subscription.ended_at:type_name -> google.protobuf.Timestamp
-	5,  // 6: dotily.billing.v1.Subscription.trial_end:type_name -> google.protobuf.Timestamp
-	6,  // 7: dotily.billing.v1.Subscription.metadata:type_name -> google.protobuf.Struct
-	5,  // 8: dotily.billing.v1.Subscription.created_at:type_name -> google.protobuf.Timestamp
-	5,  // 9: dotily.billing.v1.Subscription.updated_at:type_name -> google.protobuf.Timestamp
+	6,  // 2: dotily.billing.v1.Subscription.current_period_start:type_name -> google.protobuf.Timestamp
+	6,  // 3: dotily.billing.v1.Subscription.current_period_end:type_name -> google.protobuf.Timestamp
+	6,  // 4: dotily.billing.v1.Subscription.canceled_at:type_name -> google.protobuf.Timestamp
+	6,  // 5: dotily.billing.v1.Subscription.ended_at:type_name -> google.protobuf.Timestamp
+	6,  // 6: dotily.billing.v1.Subscription.trial_end:type_name -> google.protobuf.Timestamp
+	7,  // 7: dotily.billing.v1.Subscription.metadata:type_name -> google.protobuf.Struct
+	6,  // 8: dotily.billing.v1.Subscription.created_at:type_name -> google.protobuf.Timestamp
+	6,  // 9: dotily.billing.v1.Subscription.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 10: dotily.billing.v1.UpsertSubscriptionParams.subscription:type_name -> dotily.billing.v1.Subscription
-	1,  // 11: dotily.billing.v1.UpsertSubscriptionResult.subscription:type_name -> dotily.billing.v1.Subscription
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	5,  // 11: dotily.billing.v1.SubscriptionFilter.providers:type_name -> dotily.billing.v1.BillingProvider
+	0,  // 12: dotily.billing.v1.SubscriptionFilter.statuses:type_name -> dotily.billing.v1.SubscriptionStatus
+	1,  // 13: dotily.billing.v1.SubscriptionsPage.items:type_name -> dotily.billing.v1.Subscription
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_subscriptions_proto_init() }
@@ -438,7 +556,7 @@ func file_dotily_billing_v1_subscriptions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_subscriptions_proto_rawDesc), len(file_dotily_billing_v1_subscriptions_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

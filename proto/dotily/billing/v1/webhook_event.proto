@@ -29,3 +29,28 @@ message WebhookEvent {
   string error = 7; // empty => NULL/none
   google.protobuf.Struct payload = 8;
 }
+
+message ReceiveWebhookParams {
+  BillingProvider provider = 1;
+  string event_id = 2;
+
+  // raw provider event as JSON object
+  google.protobuf.Struct payload = 3;
+
+  // unset => now()
+  google.protobuf.Timestamp received_at = 4;
+}
+
+message FinishWebhookParams {
+  BillingProvider provider = 1;
+  string event_id = 2;
+
+  // PROCESSED / FAILED / IGNORED
+  WebhookEventStatus status = 3;
+
+  // unset => now()
+  google.protobuf.Timestamp processed_at = 4;
+
+  // only meaningful for FAILED (empty => clear)
+  string error = 5;
+}

@@ -49,6 +49,23 @@ message UpsertSubscriptionParams {
   Subscription subscription = 1;
 }
 
-message UpsertSubscriptionResult {
-  Subscription subscription = 1;
+message SubscriptionFilter {
+  // If set, filter subscriptions for a single user (common case).
+  // Empty => all users (admin).
+  string user_id = 1;
+
+  // Convenience filter: ended_at IS NULL
+  bool active_only = 2;
+
+  // Empty => any provider/status/plan
+  repeated BillingProvider providers = 3;
+  repeated SubscriptionStatus statuses = 4;
+  repeated string plan_codes = 5;
+}
+
+message SubscriptionsPage {
+  uint64 total = 1;
+  uint32 offset = 2;
+  uint32 limit = 3;
+  repeated Subscription items = 4;
 }

@@ -53,6 +53,11 @@ message OutboxRecord {
   google.protobuf.Timestamp sent_at = 12; // unset => NULL
 }
 
+message OutboxAckParams {
+  string id = 1; // UUID (row id)
+  google.protobuf.Timestamp at = 2; // unset => now()
+}
+
 message OutboxEnqueueParams {
   string topic = 1;
   string dedup_key = 2; // empty => NULL
@@ -62,7 +67,7 @@ message OutboxEnqueueParams {
 
 message OutboxEnqueueResult {
   string id = 1; // UUID, empty if dedup prevented insert
-  bool created = 2; // inserted vs dedup no-op
+  bool created = 2;
 }
 
 message OutboxDequeueParams {
@@ -74,8 +79,10 @@ message OutboxDequeueParams {
 }
 
 message OutboxFailParams {
-  string id = 1; // UUID
+  string id = 1; // UUID (row id)
   google.protobuf.Timestamp at = 2; // unset => now()
   string error = 3;
-  google.protobuf.Timestamp retry_at = 4; // unset => mark failed
+
+  // unset => mark failed, set => retry by re-queueing at retry_at
+  google.protobuf.Timestamp retry_at = 4;
 }

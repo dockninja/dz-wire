@@ -180,6 +180,155 @@ func (x *WebhookEvent) GetPayload() *structpb.Struct {
 	return nil
 }
 
+type ReceiveWebhookParams struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Provider BillingProvider        `protobuf:"varint,1,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	EventId  string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	// raw provider event as JSON object
+	Payload *structpb.Struct `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	// unset => now()
+	ReceivedAt    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=received_at,json=receivedAt,proto3" json:"received_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReceiveWebhookParams) Reset() {
+	*x = ReceiveWebhookParams{}
+	mi := &file_dotily_billing_v1_webhook_event_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReceiveWebhookParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReceiveWebhookParams) ProtoMessage() {}
+
+func (x *ReceiveWebhookParams) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_webhook_event_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReceiveWebhookParams.ProtoReflect.Descriptor instead.
+func (*ReceiveWebhookParams) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_webhook_event_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ReceiveWebhookParams) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *ReceiveWebhookParams) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *ReceiveWebhookParams) GetPayload() *structpb.Struct {
+	if x != nil {
+		return x.Payload
+	}
+	return nil
+}
+
+func (x *ReceiveWebhookParams) GetReceivedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ReceivedAt
+	}
+	return nil
+}
+
+type FinishWebhookParams struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Provider BillingProvider        `protobuf:"varint,1,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"`
+	EventId  string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	// PROCESSED / FAILED / IGNORED
+	Status WebhookEventStatus `protobuf:"varint,3,opt,name=status,proto3,enum=dotily.billing.v1.WebhookEventStatus" json:"status,omitempty"`
+	// unset => now()
+	ProcessedAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=processed_at,json=processedAt,proto3" json:"processed_at,omitempty"`
+	// only meaningful for FAILED (empty => clear)
+	Error         string `protobuf:"bytes,5,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FinishWebhookParams) Reset() {
+	*x = FinishWebhookParams{}
+	mi := &file_dotily_billing_v1_webhook_event_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FinishWebhookParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FinishWebhookParams) ProtoMessage() {}
+
+func (x *FinishWebhookParams) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_webhook_event_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FinishWebhookParams.ProtoReflect.Descriptor instead.
+func (*FinishWebhookParams) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_webhook_event_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *FinishWebhookParams) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *FinishWebhookParams) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *FinishWebhookParams) GetStatus() WebhookEventStatus {
+	if x != nil {
+		return x.Status
+	}
+	return WebhookEventStatus_WEBHOOK_EVENT_STATUS_UNSPECIFIED
+}
+
+func (x *FinishWebhookParams) GetProcessedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ProcessedAt
+	}
+	return nil
+}
+
+func (x *FinishWebhookParams) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
 var File_dotily_billing_v1_webhook_event_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_webhook_event_proto_rawDesc = "" +
@@ -194,7 +343,19 @@ const file_dotily_billing_v1_webhook_event_proto_rawDesc = "" +
 	"\fprocessed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\vprocessedAt\x12=\n" +
 	"\x06status\x18\x06 \x01(\x0e2%.dotily.billing.v1.WebhookEventStatusR\x06status\x12\x14\n" +
 	"\x05error\x18\a \x01(\tR\x05error\x121\n" +
-	"\apayload\x18\b \x01(\v2\x17.google.protobuf.StructR\apayload*\xc3\x01\n" +
+	"\apayload\x18\b \x01(\v2\x17.google.protobuf.StructR\apayload\"\xe1\x01\n" +
+	"\x14ReceiveWebhookParams\x12>\n" +
+	"\bprovider\x18\x01 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x19\n" +
+	"\bevent_id\x18\x02 \x01(\tR\aeventId\x121\n" +
+	"\apayload\x18\x03 \x01(\v2\x17.google.protobuf.StructR\apayload\x12;\n" +
+	"\vreceived_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"receivedAt\"\x84\x02\n" +
+	"\x13FinishWebhookParams\x12>\n" +
+	"\bprovider\x18\x01 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12\x19\n" +
+	"\bevent_id\x18\x02 \x01(\tR\aeventId\x12=\n" +
+	"\x06status\x18\x03 \x01(\x0e2%.dotily.billing.v1.WebhookEventStatusR\x06status\x12=\n" +
+	"\fprocessed_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\vprocessedAt\x12\x14\n" +
+	"\x05error\x18\x05 \x01(\tR\x05error*\xc3\x01\n" +
 	"\x12WebhookEventStatus\x12$\n" +
 	" WEBHOOK_EVENT_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cWEBHOOK_EVENT_STATUS_PENDING\x10\x01\x12\"\n" +
@@ -215,25 +376,33 @@ func file_dotily_billing_v1_webhook_event_proto_rawDescGZIP() []byte {
 }
 
 var file_dotily_billing_v1_webhook_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_dotily_billing_v1_webhook_event_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dotily_billing_v1_webhook_event_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_dotily_billing_v1_webhook_event_proto_goTypes = []any{
 	(WebhookEventStatus)(0),       // 0: dotily.billing.v1.WebhookEventStatus
 	(*WebhookEvent)(nil),          // 1: dotily.billing.v1.WebhookEvent
-	(BillingProvider)(0),          // 2: dotily.billing.v1.BillingProvider
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),       // 4: google.protobuf.Struct
+	(*ReceiveWebhookParams)(nil),  // 2: dotily.billing.v1.ReceiveWebhookParams
+	(*FinishWebhookParams)(nil),   // 3: dotily.billing.v1.FinishWebhookParams
+	(BillingProvider)(0),          // 4: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),       // 6: google.protobuf.Struct
 }
 var file_dotily_billing_v1_webhook_event_proto_depIdxs = []int32{
-	2, // 0: dotily.billing.v1.WebhookEvent.provider:type_name -> dotily.billing.v1.BillingProvider
-	3, // 1: dotily.billing.v1.WebhookEvent.received_at:type_name -> google.protobuf.Timestamp
-	3, // 2: dotily.billing.v1.WebhookEvent.processed_at:type_name -> google.protobuf.Timestamp
-	0, // 3: dotily.billing.v1.WebhookEvent.status:type_name -> dotily.billing.v1.WebhookEventStatus
-	4, // 4: dotily.billing.v1.WebhookEvent.payload:type_name -> google.protobuf.Struct
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	4,  // 0: dotily.billing.v1.WebhookEvent.provider:type_name -> dotily.billing.v1.BillingProvider
+	5,  // 1: dotily.billing.v1.WebhookEvent.received_at:type_name -> google.protobuf.Timestamp
+	5,  // 2: dotily.billing.v1.WebhookEvent.processed_at:type_name -> google.protobuf.Timestamp
+	0,  // 3: dotily.billing.v1.WebhookEvent.status:type_name -> dotily.billing.v1.WebhookEventStatus
+	6,  // 4: dotily.billing.v1.WebhookEvent.payload:type_name -> google.protobuf.Struct
+	4,  // 5: dotily.billing.v1.ReceiveWebhookParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	6,  // 6: dotily.billing.v1.ReceiveWebhookParams.payload:type_name -> google.protobuf.Struct
+	5,  // 7: dotily.billing.v1.ReceiveWebhookParams.received_at:type_name -> google.protobuf.Timestamp
+	4,  // 8: dotily.billing.v1.FinishWebhookParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	0,  // 9: dotily.billing.v1.FinishWebhookParams.status:type_name -> dotily.billing.v1.WebhookEventStatus
+	5,  // 10: dotily.billing.v1.FinishWebhookParams.processed_at:type_name -> google.protobuf.Timestamp
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_webhook_event_proto_init() }
@@ -248,7 +417,7 @@ func file_dotily_billing_v1_webhook_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_webhook_event_proto_rawDesc), len(file_dotily_billing_v1_webhook_event_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

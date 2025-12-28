@@ -369,6 +369,142 @@ func (x *UpsertPlanPriceParams) GetActive() bool {
 	return false
 }
 
+type PlanFilter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ActiveOnly    bool                   `protobuf:"varint,1,opt,name=active_only,json=activeOnly,proto3" json:"active_only,omitempty"`                  // default false => all
+	Codes         []string               `protobuf:"bytes,2,rep,name=codes,proto3" json:"codes,omitempty"`                                               // empty => all (e.g. ["free","pro"])
+	Provider      BillingProvider        `protobuf:"varint,3,opt,name=provider,proto3,enum=dotily.billing.v1.BillingProvider" json:"provider,omitempty"` // UNSPECIFIED => any provider
+	IncludePrices bool                   `protobuf:"varint,4,opt,name=include_prices,json=includePrices,proto3" json:"include_prices,omitempty"`         // default false => don’t join prices
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlanFilter) Reset() {
+	*x = PlanFilter{}
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlanFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlanFilter) ProtoMessage() {}
+
+func (x *PlanFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlanFilter.ProtoReflect.Descriptor instead.
+func (*PlanFilter) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PlanFilter) GetActiveOnly() bool {
+	if x != nil {
+		return x.ActiveOnly
+	}
+	return false
+}
+
+func (x *PlanFilter) GetCodes() []string {
+	if x != nil {
+		return x.Codes
+	}
+	return nil
+}
+
+func (x *PlanFilter) GetProvider() BillingProvider {
+	if x != nil {
+		return x.Provider
+	}
+	return BillingProvider_BILLING_PROVIDER_UNSPECIFIED
+}
+
+func (x *PlanFilter) GetIncludePrices() bool {
+	if x != nil {
+		return x.IncludePrices
+	}
+	return false
+}
+
+type PlansPage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         uint64                 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Offset        uint32                 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Limit         uint32                 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Items         []*Plan                `protobuf:"bytes,4,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlansPage) Reset() {
+	*x = PlansPage{}
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlansPage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlansPage) ProtoMessage() {}
+
+func (x *PlansPage) ProtoReflect() protoreflect.Message {
+	mi := &file_dotily_billing_v1_plans_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlansPage.ProtoReflect.Descriptor instead.
+func (*PlansPage) Descriptor() ([]byte, []int) {
+	return file_dotily_billing_v1_plans_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *PlansPage) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *PlansPage) GetOffset() uint32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *PlansPage) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *PlansPage) GetItems() []*Plan {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
 var File_dotily_billing_v1_plans_proto protoreflect.FileDescriptor
 
 const file_dotily_billing_v1_plans_proto_rawDesc = "" +
@@ -407,7 +543,19 @@ const file_dotily_billing_v1_plans_proto_rawDesc = "" +
 	"\n" +
 	"product_id\x18\x03 \x01(\tR\tproductId\x12\x19\n" +
 	"\bprice_id\x18\x04 \x01(\tR\apriceId\x12\x16\n" +
-	"\x06active\x18\x05 \x01(\bR\x06activeBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
+	"\x06active\x18\x05 \x01(\bR\x06active\"\xaa\x01\n" +
+	"\n" +
+	"PlanFilter\x12\x1f\n" +
+	"\vactive_only\x18\x01 \x01(\bR\n" +
+	"activeOnly\x12\x14\n" +
+	"\x05codes\x18\x02 \x03(\tR\x05codes\x12>\n" +
+	"\bprovider\x18\x03 \x01(\x0e2\".dotily.billing.v1.BillingProviderR\bprovider\x12%\n" +
+	"\x0einclude_prices\x18\x04 \x01(\bR\rincludePrices\"~\n" +
+	"\tPlansPage\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x04R\x05total\x12\x16\n" +
+	"\x06offset\x18\x02 \x01(\rR\x06offset\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\rR\x05limit\x12-\n" +
+	"\x05items\x18\x04 \x03(\v2\x17.dotily.billing.v1.PlanR\x05itemsBAZ?github.com/dockninja/dz-wire/gen/go/dotily/billing/v1;pbbillingb\x06proto3"
 
 var (
 	file_dotily_billing_v1_plans_proto_rawDescOnce sync.Once
@@ -421,30 +569,34 @@ func file_dotily_billing_v1_plans_proto_rawDescGZIP() []byte {
 	return file_dotily_billing_v1_plans_proto_rawDescData
 }
 
-var file_dotily_billing_v1_plans_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_dotily_billing_v1_plans_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_dotily_billing_v1_plans_proto_goTypes = []any{
 	(*PlanPrice)(nil),             // 0: dotily.billing.v1.PlanPrice
 	(*Plan)(nil),                  // 1: dotily.billing.v1.Plan
 	(*UpsertPlanParams)(nil),      // 2: dotily.billing.v1.UpsertPlanParams
 	(*UpsertPlanPriceParams)(nil), // 3: dotily.billing.v1.UpsertPlanPriceParams
-	(BillingProvider)(0),          // 4: dotily.billing.v1.BillingProvider
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),       // 6: google.protobuf.Struct
+	(*PlanFilter)(nil),            // 4: dotily.billing.v1.PlanFilter
+	(*PlansPage)(nil),             // 5: dotily.billing.v1.PlansPage
+	(BillingProvider)(0),          // 6: dotily.billing.v1.BillingProvider
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),       // 8: google.protobuf.Struct
 }
 var file_dotily_billing_v1_plans_proto_depIdxs = []int32{
-	4, // 0: dotily.billing.v1.PlanPrice.provider:type_name -> dotily.billing.v1.BillingProvider
-	5, // 1: dotily.billing.v1.PlanPrice.created_at:type_name -> google.protobuf.Timestamp
-	6, // 2: dotily.billing.v1.Plan.entitlements:type_name -> google.protobuf.Struct
-	5, // 3: dotily.billing.v1.Plan.created_at:type_name -> google.protobuf.Timestamp
-	5, // 4: dotily.billing.v1.Plan.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 5: dotily.billing.v1.Plan.prices:type_name -> dotily.billing.v1.PlanPrice
-	6, // 6: dotily.billing.v1.UpsertPlanParams.entitlements:type_name -> google.protobuf.Struct
-	4, // 7: dotily.billing.v1.UpsertPlanPriceParams.provider:type_name -> dotily.billing.v1.BillingProvider
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	6,  // 0: dotily.billing.v1.PlanPrice.provider:type_name -> dotily.billing.v1.BillingProvider
+	7,  // 1: dotily.billing.v1.PlanPrice.created_at:type_name -> google.protobuf.Timestamp
+	8,  // 2: dotily.billing.v1.Plan.entitlements:type_name -> google.protobuf.Struct
+	7,  // 3: dotily.billing.v1.Plan.created_at:type_name -> google.protobuf.Timestamp
+	7,  // 4: dotily.billing.v1.Plan.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 5: dotily.billing.v1.Plan.prices:type_name -> dotily.billing.v1.PlanPrice
+	8,  // 6: dotily.billing.v1.UpsertPlanParams.entitlements:type_name -> google.protobuf.Struct
+	6,  // 7: dotily.billing.v1.UpsertPlanPriceParams.provider:type_name -> dotily.billing.v1.BillingProvider
+	6,  // 8: dotily.billing.v1.PlanFilter.provider:type_name -> dotily.billing.v1.BillingProvider
+	1,  // 9: dotily.billing.v1.PlansPage.items:type_name -> dotily.billing.v1.Plan
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_dotily_billing_v1_plans_proto_init() }
@@ -459,7 +611,7 @@ func file_dotily_billing_v1_plans_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dotily_billing_v1_plans_proto_rawDesc), len(file_dotily_billing_v1_plans_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

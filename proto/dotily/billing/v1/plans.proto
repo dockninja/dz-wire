@@ -46,3 +46,17 @@ message UpsertPlanPriceParams {
   string price_id = 4;
   bool active = 5;
 }
+
+message PlanFilter {
+  bool active_only = 1; // default false => all
+  repeated string codes = 2; // empty => all (e.g. ["free","pro"])
+  BillingProvider provider = 3; // UNSPECIFIED => any provider
+  bool include_prices = 4; // default false => don’t join prices
+}
+
+message PlansPage {
+  uint64 total = 1;
+  uint32 offset = 2;
+  uint32 limit = 3;
+  repeated Plan items = 4;
+}

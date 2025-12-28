@@ -43,3 +43,20 @@ message ListInvoicesParams {
   int32 limit = 2; // 0 => server default
   string subscription_id = 3; // optional filter, empty => all
 }
+
+message UpsertInvoiceParams {
+  string user_id = 1;
+  BillingProvider provider = 2;
+  string invoice_id = 3;
+
+  InvoiceStatus status = 4;
+
+  string currency = 5;
+  int64 total = 6;
+  int64 amount_paid = 7;
+
+  string hosted_invoice_url = 8; // empty => NULL
+  string invoice_pdf_url = 9; // empty => NULL
+
+  string subscription_id = 10; // empty => NULL
+}
